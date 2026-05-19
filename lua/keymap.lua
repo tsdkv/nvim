@@ -1,7 +1,7 @@
 local wk = require("which-key")
 
 wk.add({
-	{ '<leader>e', MiniFiles.open, desc = "Toggle explorer", mode = 'n' },
+	{ '<leader>e', function() MiniFiles.open() end, desc = "Toggle explorer", mode = 'n' },
 })
 
 wk.add({
