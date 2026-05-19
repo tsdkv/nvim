@@ -17,3 +17,6 @@ core.on_event("BufReadPre", function()
     require('lsp').setup()
 end)
 
+core.later(function()
+    require('commands')
+end, 100)
