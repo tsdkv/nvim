@@ -21,7 +21,6 @@ function M.setup()
 
 			keymaps.attach(ev.buf)
 
-
 			if client:supports_method("textDocument/inlayHint", ev.buf) then
 				keymaps.attach_inlay_hints(ev.buf)
 			end
