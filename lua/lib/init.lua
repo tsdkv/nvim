@@ -43,6 +43,23 @@ local function resolve(target)
     return function() end
 end
 
+-- Generates a clean, unique and stable string key for any target type
+local function get_target_key(target)
+    if type(target) == "string" then
+        return target
+    end
+
+    -- Extract file and line number for anonymous functions
+    local info = debug.getinfo(target, "Sl")
+    if info and info.short_src then
+        local filename = info.short_src:match("^.+/(.+)$") or info.short_src
+        return string.format("%s_%d", filename:gsub("%.", "_"), info.linedefined)
+    end
+
+    -- Fallback: strip invalid characters from the function memory address
+    return tostring(target):gsub("[^%w]", "_")
+end
+
 -- One-per-tick queue: each later() task runs on its own event-loop tick so
 -- the UI can redraw between tasks.
 local queue, draining = {}, false
@@ -66,7 +83,16 @@ M.later = function(target)
     if vim.v.vim_did_enter == 1 then
         drain()
     else
-        vim.api.nvim_create_autocmd("VimEnter", { once = true, callback = drain })
+        local target_key = get_target_key(target)
+        local group = M.augroup('LibLater_' .. target_key)
+        vim.api.nvim_create_autocmd("VimEnter", {
+            group = group,
+            once = true,
+            callback = function()
+                drain()
+                vim.api.nvim_del_augroup_by_id(group)
+            end
+        })
     end
 end
 
@@ -77,24 +103,38 @@ end
 M.now_if_filetype = function(filetypes, f)
     local ft = vim.bo.filetype
     for _, v in ipairs(filetypes) do
-        if ft == v then M.now(f); return end
+        if ft == v then
+            M.now(f); return
+        end
     end
     M.later(f)
 end
 
 M.on_event = function(events, target, pattern)
+    local target_key = get_target_key(target)
+    local group = M.augroup('LibLazyLoadOnEvent_' .. target_key)
+
     vim.api.nvim_create_autocmd(events, {
         once     = true,
+        group    = group,
         pattern  = pattern,
         callback = function() wrap(resolve(target)) end,
     })
 end
 
 M.on_filetype = function(filetypes, target)
+    local target_key = get_target_key(target)
+    local group = M.augroup('LibLazyFiletype_' .. target_key)
+
     vim.api.nvim_create_autocmd("FileType", {
+        group    = group,
         pattern  = filetypes,
         once     = true,
-        callback = function() wrap(resolve(target)) end,
+        callback = function()
+            wrap(resolve(target))
+
+            vim.api.nvim_del_augroup_by_id(group)
+        end,
     })
 end
 

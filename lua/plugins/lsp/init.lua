@@ -20,6 +20,7 @@ local function check_server_config(config)
     check_type('on_attach', config.on_attach, 'function', true)
 end
 
+
 function M.setup()
     vim.diagnostic.config({
         signs            = true,
@@ -53,7 +54,9 @@ function M.setup()
     end
 
     require('lib').later(function()
-        require('mason-tool-installer').setup({ ensure_installed = tools })
+        require('mason-tool-installer').setup({
+            ensure_installed = tools,
+        })
     end)
 
     local attach = require('plugins.lsp.attach')

@@ -29,26 +29,26 @@ end
 return {
     name      = 'gopls',
     filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
-    tools     = { 'gopls', 'iferr' },
-    setup = function()
+    tools     = { 'gopls', 'iferr', 'goimports', 'gofumpt' },
+    setup     = function()
         vim.lsp.config('gopls', {
             cmd          = { 'gopls' },
             filetypes    = { 'go', 'gomod', 'gowork', 'gotmpl' },
             root_markers = { 'go.work', 'go.mod', '.git' },
-            settings = {
+            settings     = {
                 gopls = {
                     gofumpt            = true,
                     staticcheck        = true,
                     completeUnimported = true,
                     usePlaceholders    = true,
-                    analyses = {
+                    analyses           = {
                         nilness        = true,
                         unusedparams   = true,
                         unusedwrite    = true,
                         unusedvariable = true,
                         useany         = true,
                     },
-                    hints = {
+                    hints              = {
                         assignVariableTypes    = true,
                         compositeLiteralFields = true,
                         compositeLiteralTypes  = true,
