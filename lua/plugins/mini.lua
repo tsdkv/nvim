@@ -1,13 +1,9 @@
 local M = {}
 
 function M.setup()
-    require('mini.icons').setup()
-    require('mini.files').setup()
     require('mini.bufremove').setup()
     require('mini.completion').setup({})
-    require('mini.git').setup()
     require('mini.pairs').setup()
-    require('mini.diff').setup()
 
     -- TODO: remove this plugin
     local statusline = require('mini.statusline')
@@ -25,7 +21,7 @@ function M.setup()
                 local location      = statusline.section_location({ trunc_width = 75 })
                 local search        = statusline.section_searchcount({ trunc_width = 75 })
 
-                local lsp_names = ""
+                local lsp_names     = ""
                 if not statusline.is_truncated(75) then
                     local clients = vim.lsp.get_clients({ bufnr = 0 })
                     if #clients > 0 then
@@ -38,8 +34,8 @@ function M.setup()
                 end
 
                 return statusline.combine_groups({
-                    { hl = mode_hl,                  strings = { mode } },
-                    { hl = 'MiniStatuslineDevinfo',  strings = { git, diff, diagnostics } },
+                    { hl = mode_hl,                 strings = { mode } },
+                    { hl = 'MiniStatuslineDevinfo', strings = { git, diff, diagnostics } },
                     '%<',
                     { hl = 'MiniStatuslineFilename', strings = { filename } },
                     '%=',
@@ -65,7 +61,7 @@ function M.setup()
     require('mini.tabline').setup({
         show_icons      = true,
         tabpage_section = 'left',
-        format = function(buf_id, label)
+        format          = function(buf_id, label)
             local prefix = vim.bo[buf_id].modified and '󰏫' or ''
             return prefix .. MiniTabline.default_format(buf_id, label)
         end,
@@ -93,11 +89,11 @@ function M.setup()
     end
 
     require('which-key').add({
-        { '<leader>e',  function() MiniFiles.open() end,                                    desc = 'Toggle explorer'      },
-        { '<leader>x',  function() require('mini.bufremove').delete(0, false) end,          desc = 'Delete Buffer'        },
-        { '<leader>bo', function() close_bufs(function()        return true         end) end, desc = 'Close Other Buffers'  },
-        { '<leader>bl', function() close_bufs(function(b, cur)  return b < cur      end) end, desc = 'Close Buffers Left'   },
-        { '<leader>br', function() close_bufs(function(b, cur)  return b > cur      end) end, desc = 'Close Buffers Right'  },
+
+        { '<leader>x',  function() require('mini.bufremove').delete(0, false) end,      desc = 'Delete Buffer' },
+        { '<leader>bo', function() close_bufs(function() return true end) end,          desc = 'Close Other Buffers' },
+        { '<leader>bl', function() close_bufs(function(b, cur) return b < cur end) end, desc = 'Close Buffers Left' },
+        { '<leader>br', function() close_bufs(function(b, cur) return b > cur end) end, desc = 'Close Buffers Right' },
     })
 end
 

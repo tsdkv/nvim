@@ -1,8 +1,16 @@
 {
   "plugins": {
+    "gitsigns.nvim": {
+      "rev": "dd3f588bacbeb041be6facf1742e42097f62165d",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
+    },
+    "lazygit.nvim": {
+      "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
+      "src": "https://github.com/kdheepak/lazygit.nvim"
     },
     "mason-tool-installer.nvim": {
       "rev": "443f1ef8b5e6bf47045cb2217b6f748a223cf7dc",
@@ -11,11 +19,6 @@
     "mason.nvim": {
       "rev": "8e921c2b68571e978db5d4d3fef9c9a7f8755473",
       "src": "https://github.com/mason-org/mason.nvim"
-    },
-    "mini-git": {
-      "rev": "832467238636e3dfa1db76de929996b6668c35ef",
-      "src": "https://github.com/nvim-mini/mini-git",
-      "version": "'stable'"
     },
     "mini.bufremove": {
       "rev": "10857aa39160c127694151828914df3131ba83b6",
@@ -30,21 +33,6 @@
     "mini.completion": {
       "rev": "7c5edfc0e479dd4edd898cc9ddd1920d8c1ce420",
       "src": "https://github.com/nvim-mini/mini.completion",
-      "version": "'stable'"
-    },
-    "mini.diff": {
-      "rev": "fbb93ea1728e7c9d0944df8bd022a68402bd2e7e",
-      "src": "https://github.com/nvim-mini/mini.diff",
-      "version": "'stable'"
-    },
-    "mini.files": {
-      "rev": "22c64f010eef047ed270e29e7cc266cd4740787e",
-      "src": "https://github.com/nvim-mini/mini.files",
-      "version": "'stable'"
-    },
-    "mini.icons": {
-      "rev": "ff2e4f1d29f659cc2bad0f9256f2f6195c6b2428",
-      "src": "https://github.com/nvim-mini/mini.icons",
       "version": "'stable'"
     },
     "mini.notify": {
@@ -66,6 +54,19 @@
       "rev": "caf23615b9b99bacc79ecd60f61c4e6a8ec18c84",
       "src": "https://github.com/nvim-mini/mini.tabline",
       "version": "'stable'"
+    },
+    "neo-tree.nvim": {
+      "rev": "83e7a2982fd12b9c3d35bc39dd5877cd91a02a61",
+      "src": "https://github.com/nvim-neo-tree/neo-tree.nvim",
+      "version": "3.0.0 - 4.0.0"
+    },
+    "nui.nvim": {
+      "rev": "de740991c12411b663994b2860f1a4fd0937c130",
+      "src": "https://github.com/MunifTanjim/nui.nvim"
+    },
+    "nvim-web-devicons": {
+      "rev": "7d8dad2c837fcdf2e65997e68657c1a21c568074",
+      "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
     "plenary.nvim": {
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",

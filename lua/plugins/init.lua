@@ -10,22 +10,30 @@ vim.pack.add({
     gh('nvim-telescope/telescope.nvim'),
     gh('folke/which-key.nvim'),
     gh('folke/zen-mode.nvim'),
+    gh('kdheepak/lazygit.nvim'),
+    gh('lewis6991/gitsigns.nvim'),
+
+    gh("MunifTanjim/nui.nvim"),
+    gh("nvim-tree/nvim-web-devicons"),
+    {
+        src = gh('nvim-neo-tree/neo-tree.nvim'),
+        version = vim.version.range('3')
+    },
+
     { src = gh('nvim-mini/mini.comment'),    version = 'stable' },
-    { src = gh('nvim-mini/mini.files'),      version = 'stable' },
-    { src = gh('nvim-mini/mini.icons'),      version = 'stable' },
     { src = gh('nvim-mini/mini.bufremove'),  version = 'stable' },
     { src = gh('nvim-mini/mini.completion'), version = 'stable' },
     { src = gh('nvim-mini/mini.tabline'),    version = 'stable' },
     { src = gh('nvim-mini/mini.statusline'), version = 'stable' },
-    { src = gh('nvim-mini/mini-git'),        version = 'stable' },
-    { src = gh('nvim-mini/mini.diff'),       version = 'stable' },
     { src = gh('nvim-mini/mini.notify'),     version = 'stable' },
     { src = gh('nvim-mini/mini.pairs'),      version = 'stable' },
 })
 
 -- Eager: must exist before any other plugin file registers keymaps or colors
+lib.now('nvim-web-devicons')
 lib.now('plugins.colorscheme')
 lib.now('plugins.which-key')
+lib.now('plugins.neo-tree')
 
 -- Deferred: one per event-loop tick to keep startup responsive
 lib.later('plugins.mini')
@@ -46,3 +54,5 @@ lib.on_key('<leader>f<cr>', 'plugins.telescope')
 
 -- Key-driven: zen-mode lazy-loads on first keypress
 lib.on_key('<leader>z', 'plugins.zen-mode')
+
+lib.later('plugins.git')
