@@ -7,6 +7,10 @@ local function wrap(f)
     end
 end
 
+M.augroup = function(name)
+    return vim.api.nvim_create_augroup(name, { clear = true })
+end
+
 M.safe_require = function(name)
     local ok, mod = pcall(require, name)
     if not ok then
@@ -66,6 +70,7 @@ local queue, draining = {}, false
 local function drain()
     if draining or #queue == 0 then return end
     draining = true
+
     vim.schedule(function()
         local f = table.remove(queue, 1)
         wrap(f)
@@ -78,36 +83,31 @@ M.now = function(target)
     wrap(resolve(target))
 end
 
+local later_group = M.augroup("LibLaterStart")
+local has_autocmd = false
+
 M.later = function(target)
     table.insert(queue, resolve(target))
     if vim.v.vim_did_enter == 1 then
         drain()
     else
-        local target_key = get_target_key(target)
-        local group = M.augroup('LibLater_' .. target_key)
-        vim.api.nvim_create_autocmd("VimEnter", {
-            group = group,
-            once = true,
-            callback = function()
-                drain()
-                vim.api.nvim_del_augroup_by_id(group)
-            end
-        })
+        if not has_autocmd then
+            has_autocmd = true
+            vim.api.nvim_create_autocmd("VimEnter", {
+                group = later_group,
+                once = true,
+                callback = function()
+                    drain()
+
+                    vim.api.nvim_del_augroup_by_id(later_group)
+                end
+            })
+        end
     end
 end
 
 M.now_if_args = function(f)
     if vim.fn.argc(-1) > 0 then M.now(f) else M.later(f) end
-end
-
-M.now_if_filetype = function(filetypes, f)
-    local ft = vim.bo.filetype
-    for _, v in ipairs(filetypes) do
-        if ft == v then
-            M.now(f); return
-        end
-    end
-    M.later(f)
 end
 
 M.on_event = function(events, target, pattern)
@@ -118,7 +118,11 @@ M.on_event = function(events, target, pattern)
         once     = true,
         group    = group,
         pattern  = pattern,
-        callback = function() wrap(resolve(target)) end,
+        callback = function()
+            wrap(resolve(target))
+
+            vim.api.nvim_del_augroup_by_id(group)
+        end,
     })
 end
 
@@ -174,8 +178,5 @@ M.on_cmd = function(name, target)
     end, { nargs = '*' })
 end
 
-M.augroup = function(name)
-    return vim.api.nvim_create_augroup(name, { clear = true })
-end
 
 return M
