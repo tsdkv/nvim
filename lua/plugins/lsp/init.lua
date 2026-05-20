@@ -1,5 +1,25 @@
 local M = {}
 
+local function discover_servers()
+    local servers = {}
+    for _, path in ipairs(vim.api.nvim_get_runtime_file('lua/plugins/lsp/servers/*.lua', true)) do
+        local mod_name = vim.fn.fnamemodify(path, ':t:r')
+        servers[mod_name] = require('plugins.lsp.servers.' .. mod_name)
+    end
+    return servers
+end
+
+local check_type = require('utils').check_type
+local function check_server_config(config)
+    check_type('config', config, 'table', false)
+
+    check_type('name', config.name, 'string', false)
+    check_type('filetypes', config.filetypes, 'table', true)
+    check_type('tools', config.tools, 'table', true)
+    check_type('setup', config.setup, 'function', false)
+    check_type('on_attach', config.on_attach, 'function', true)
+end
+
 function M.setup()
     vim.diagnostic.config({
         signs            = true,
@@ -10,62 +30,40 @@ function M.setup()
         float            = { border = 'rounded', source = true, header = '', prefix = '' },
     })
 
-    vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
-        vim.lsp.handlers.hover, { border = 'rounded' }
-    )
-    vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
-        vim.lsp.handlers.signature_help, { border = 'rounded' }
-    )
+    require('mason').setup({})
 
-    -- Format on save; async=false so the write waits for the format to complete
-    vim.api.nvim_create_autocmd('BufWritePre', {
-        group    = vim.api.nvim_create_augroup('LspFormatOnSave', { clear = true }),
-        callback = function(ev)
-            if #vim.lsp.get_clients({ bufnr = ev.buf }) > 0 then
-                vim.lsp.buf.format({ bufnr = ev.buf, async = false })
-            end
-        end,
-    })
+    local servers  = discover_servers()
+    local tools    = {}
+    local handlers = {}
 
-    require("mason").setup({})
-    require("mason-lspconfig").setup({
-        ensure_installed = {
-            "lua_ls",
-            "gopls",
-            "rust_analyzer",
-        },
-    })
+    for _, mod in pairs(servers) do
+        check_server_config(mod)
 
-    local keymaps = require("plugins.lsp.keymap")
+        vim.list_extend(tools, mod.tools or {})
+        if mod.name and mod.on_attach then
+            handlers[mod.name] = mod.on_attach
+        end
+        if mod.filetypes and mod.setup then
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern  = mod.filetypes,
+                once     = true,
+                callback = mod.setup,
+            })
+        end
+    end
 
-    vim.api.nvim_create_autocmd("LspAttach", {
+    require('lib').later(function()
+        require('mason-tool-installer').setup({ ensure_installed = tools })
+    end)
+
+    local attach = require('plugins.lsp.attach')
+    vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(ev)
             local client = vim.lsp.get_client_by_id(ev.data.client_id)
             if not client then return end
-
-            keymaps.attach(ev.buf)
-
-            if client:supports_method("textDocument/inlayHint", ev.buf) then
-                keymaps.attach_inlay_hints(ev.buf)
-            end
-
-            if client:supports_method("textDocument/documentHighlight") then
-                -- Per-buffer group with clear=true prevents autocmd duplication
-                -- if multiple LSP clients attach to the same buffer.
-                local group = vim.api.nvim_create_augroup(
-                    'LspDocumentHighlight_' .. ev.buf, { clear = true }
-                )
-                vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-                    group    = group,
-                    buffer   = ev.buf,
-                    callback = vim.lsp.buf.document_highlight,
-                })
-                vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-                    group    = group,
-                    buffer   = ev.buf,
-                    callback = vim.lsp.buf.clear_references,
-                })
-            end
+            attach.on_attach(client, ev.buf)
+            local handler = handlers[client.name]
+            if handler then handler(client, ev.buf) end
         end,
     })
 end

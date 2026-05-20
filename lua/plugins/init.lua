@@ -3,9 +3,8 @@ local lib = require('lib')
 
 vim.pack.add({
     gh('nordtheme/vim'),
-    gh('neovim/nvim-lspconfig'),
     gh('mason-org/mason.nvim'),
-    gh('mason-org/mason-lspconfig.nvim'),
+    gh('WhoIsSethDaniel/mason-tool-installer.nvim'),
     gh('folke/lazydev.nvim'),
     gh('nvim-lua/plenary.nvim'),
     gh('nvim-telescope/telescope.nvim'),
@@ -34,13 +33,15 @@ lib.later('plugins.mini')
 -- Filetype-driven
 lib.on_filetype('lua', 'plugins.lazydev')
 
--- Event-driven: LSP attaches on first file open
+-- Event-driven: LSP infrastructure loads on first file open;
+-- it auto-discovers server modules under plugins/lsp/servers/ and
+-- arranges its own FileType-driven lazy setup for each.
 lib.on_event({ 'BufReadPre', 'BufNewFile' }, 'plugins.lsp')
 
 -- Key-driven: telescope lazy-loads on first telescope keypress
-lib.on_key('<leader>ff',    'plugins.telescope')
-lib.on_key('<leader>fg',    'plugins.telescope')
-lib.on_key('<leader>fb',    'plugins.telescope')
+lib.on_key('<leader>ff', 'plugins.telescope')
+lib.on_key('<leader>fg', 'plugins.telescope')
+lib.on_key('<leader>fb', 'plugins.telescope')
 lib.on_key('<leader>f<cr>', 'plugins.telescope')
 
 -- Key-driven: zen-mode lazy-loads on first keypress
