@@ -11,6 +11,7 @@ local function iferr()
     vim.api.nvim_put(result, 'l', true, true)
 end
 
+-- TODO: wtf?
 local function organize_imports(bufnr)
     local params = vim.lsp.util.make_range_params(nil, 'utf-8')
     params.context = { only = { 'source.organizeImports' }, diagnostics = {} }
