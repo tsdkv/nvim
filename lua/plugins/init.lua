@@ -1,5 +1,5 @@
-local gh  = require('utils').github
-local lib = require('lib')
+local gh   = require('utils').github
+local load = require('core.load')
 
 vim.pack.add({
     gh('nordtheme/vim'),
@@ -20,39 +20,41 @@ vim.pack.add({
         version = vim.version.range('3')
     },
 
-    { src = gh('nvim-mini/mini.comment'),    version = 'stable' },
-    { src = gh('nvim-mini/mini.bufremove'),  version = 'stable' },
-    { src = gh('nvim-mini/mini.completion'), version = 'stable' },
-    { src = gh('nvim-mini/mini.tabline'),    version = 'stable' },
-    { src = gh('nvim-mini/mini.statusline'), version = 'stable' },
-    { src = gh('nvim-mini/mini.notify'),     version = 'stable' },
-    { src = gh('nvim-mini/mini.pairs'),      version = 'stable' },
+    { src = gh('nvim-treesitter/nvim-treesitter') },
+
+    { src = gh('nvim-mini/mini.comment'),         version = 'stable' },
+    { src = gh('nvim-mini/mini.bufremove'),       version = 'stable' },
+    { src = gh('nvim-mini/mini.completion'),      version = 'stable' },
+    { src = gh('nvim-mini/mini.tabline'),         version = 'stable' },
+    { src = gh('nvim-mini/mini.statusline'),      version = 'stable' },
+    { src = gh('nvim-mini/mini.notify'),          version = 'stable' },
+    { src = gh('nvim-mini/mini.pairs'),           version = 'stable' },
 })
 
 -- Eager: must exist before any other plugin file registers keymaps or colors
-lib.now('nvim-web-devicons')
-lib.now('plugins.colorscheme')
-lib.now('plugins.which-key')
-lib.now('plugins.neo-tree')
+load.now('nvim-web-devicons')
+load.now('plugins.colorscheme')
+load.now('plugins.which-key')
+load.now('plugins.neo-tree')
+load.now('plugins.treesitter') -- treesitter doesn't support lazy loading
 
 -- Deferred: one per event-loop tick to keep startup responsive
-lib.later('plugins.mini')
+load.later('plugins.mini')
+load.later('plugins.git')
 
 -- Filetype-driven
-lib.on_filetype('lua', 'plugins.lazydev')
+load.on_filetype('lua', 'plugins.lazydev')
 
 -- Event-driven: LSP infrastructure loads on first file open;
 -- it auto-discovers server modules under plugins/lsp/servers/ and
 -- arranges its own FileType-driven lazy setup for each.
-lib.on_event({ 'BufReadPre', 'BufNewFile' }, 'plugins.lsp')
+load.on_event({ 'BufReadPre', 'BufNewFile' }, 'plugins.lsp')
 
 -- Key-driven: telescope lazy-loads on first telescope keypress
-lib.on_key('<leader>ff', 'plugins.telescope')
-lib.on_key('<leader>fg', 'plugins.telescope')
-lib.on_key('<leader>fb', 'plugins.telescope')
-lib.on_key('<leader>f<cr>', 'plugins.telescope')
+load.on_key('<leader>ff', 'plugins.telescope')
+load.on_key('<leader>fg', 'plugins.telescope')
+load.on_key('<leader>fb', 'plugins.telescope')
+load.on_key('<leader>f<cr>', 'plugins.telescope')
 
 -- Key-driven: zen-mode lazy-loads on first keypress
-lib.on_key('<leader>z', 'plugins.zen-mode')
-
-lib.later('plugins.git')
+load.on_key('<leader>z', 'plugins.zen-mode')

@@ -1,4 +1,4 @@
-local lib = require('lib')
+local load = require('core.load')
 
 local function iferr()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -65,7 +65,7 @@ return {
     end,
     on_attach = function(_client, bufnr)
         vim.api.nvim_create_autocmd('BufWritePre', {
-            group    = lib.augroup('GoOrganizeImports_' .. bufnr),
+            group    = load.augroup('GoOrganizeImports_' .. bufnr),
             buffer   = bufnr,
             callback = function() organize_imports(bufnr) end,
         })

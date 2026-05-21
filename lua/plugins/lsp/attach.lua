@@ -1,5 +1,5 @@
 local wk  = require('which-key')
-local lib = require('lib')
+local load = require('core.load')
 
 local M = {}
 
@@ -54,7 +54,7 @@ local function inlay_hints(bufnr)
 end
 
 local function document_highlight(_client, bufnr)
-    local group = lib.augroup('LspDocumentHighlight_' .. bufnr)
+    local group = load.augroup('LspDocumentHighlight_' .. bufnr)
     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
         group    = group,
         buffer   = bufnr,
@@ -69,7 +69,7 @@ end
 
 local function format_on_save(_client, bufnr)
     vim.api.nvim_create_autocmd('BufWritePre', {
-        group    = lib.augroup('LspFormatOnSave_' .. bufnr),
+        group    = load.augroup('LspFormatOnSave_' .. bufnr),
         buffer   = bufnr,
         callback = function() vim.lsp.buf.format({ bufnr = bufnr, async = false }) end,
     })

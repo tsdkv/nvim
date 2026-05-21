@@ -1,21 +1,21 @@
 local load_lib = function()
-    package.loaded['lib'] = nil
-    return require('lib')
+    package.loaded['core.load'] = nil
+    return require('core.load')
 end
 
 describe("Configuration Loader Framework", function()
     it('safe_require', function()
-        local lib = load_lib()
-        local result = lib.safe_require("plugin_that_does_not_exist_123")
+        local load = load_lib()
+        local result = load.safe_require("plugin_that_does_not_exist_123")
 
         assert.is_nil(result)
     end)
 
     it("should execute M.now immediately", function()
-        local lib = load_lib()
+        local load = load_lib()
         local executed = false
 
-        lib.now(function()
+        load.now(function()
             executed = true
         end)
 
@@ -23,11 +23,11 @@ describe("Configuration Loader Framework", function()
     end)
 
     it("M.later waits for VimEnter", function()
-        local lib = load_lib()
+        local load = load_lib()
         local order = {}
 
-        lib.later(function() table.insert(order, 1) end)
-        lib.later(function() table.insert(order, 2) end)
+        load.later(function() table.insert(order, 1) end)
+        load.later(function() table.insert(order, 2) end)
 
         assert.are.same({}, order, "The queue should not execute before VimEnter")
 
@@ -48,7 +48,7 @@ describe("Configuration Loader Framework", function()
     end)
 
     it("M.later should immediately schedule tasks if the editor has already entered", function()
-        local lib = load_lib()
+        local load = load_lib()
 
         local order = {}
 
@@ -57,8 +57,8 @@ describe("Configuration Loader Framework", function()
 
         -- Since "vim_did_enter == 1", it should immediately call drain(),
         -- which in turn queues the tasks into the vim.schedule event loop.
-        lib.later(function() table.insert(order, 1) end)
-        lib.later(function() table.insert(order, 2) end)
+        load.later(function() table.insert(order, 1) end)
+        load.later(function() table.insert(order, 2) end)
 
         assert.are.same({}, order, "Tasks should be deferred via vim.schedule, not executed synchronously")
 
@@ -76,12 +76,12 @@ describe("Configuration Loader Framework", function()
     end)
 
     it("M.later should register exactly one VimEnter autocmd regardless of multiple calls", function()
-        local lib = load_lib()
+        local load = load_lib()
 
         -- Call later() multiple times to simulate a heavy init.lua loading many plugins
-        lib.later(function() end)
-        lib.later(function() end)
-        lib.later(function() end)
+        load.later(function() end)
+        load.later(function() end)
+        load.later(function() end)
 
         assert(vim.v.vim_did_enter == 0, "check vim_did_enter == 0")
 
@@ -115,14 +115,14 @@ describe("Configuration Loader Framework", function()
     end)
 
     it("should safeguard M.on_event against duplicate execution", function()
-        local lib = load_lib()
+        local load = load_lib()
 
         local execution_count = 0
         local target_fn = function()
             execution_count = execution_count + 1
         end
 
-        lib.on_event("User", target_fn, "TestEvent")
+        load.on_event("User", target_fn, "TestEvent")
 
         vim.api.nvim_exec_autocmds("User", { pattern = "TestEvent" })
         vim.api.nvim_exec_autocmds("User", { pattern = "TestEvent" })

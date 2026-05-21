@@ -8,23 +8,26 @@ vim.opt.clipboard      = "unnamedplus"
 vim.g.mapleader        = " "
 vim.g.maplocalleader   = " "
 
-vim.opt.expandtab  = true
-vim.opt.tabstop    = 4
-vim.opt.shiftwidth = 4
+vim.opt.expandtab      = true
+vim.opt.tabstop        = 4
+vim.opt.shiftwidth     = 4
 
-vim.opt.updatetime   = 250
-vim.opt.cmdheight    = 0
-vim.opt.laststatus   = 3
-vim.opt.cursorline   = true
-vim.opt.ignorecase   = true
-vim.opt.smartcase    = true
-vim.opt.signcolumn   = "yes"
-vim.opt.splitbelow   = true
-vim.opt.splitright   = true
-vim.opt.scrolloff    = 4
-vim.opt.confirm      = true
-vim.opt.inccommand   = 'split'  -- live preview of :s substitutions in a split
-vim.opt.smoothscroll = true     -- smooth Ctrl-D/U scrolling (nvim 0.10+)
-vim.opt.mouse        = 'a'      -- mouse in all modes
-vim.opt.list         = true
-vim.opt.listchars    = { tab = '  ', trail = '·', nbsp = '␣' }
+vim.opt.updatetime     = 250
+vim.opt.cmdheight      = 0
+vim.opt.laststatus     = 3
+vim.opt.cursorline     = true
+vim.opt.ignorecase     = true
+vim.opt.smartcase      = true
+vim.opt.signcolumn     = "yes"
+vim.opt.splitbelow     = true
+vim.opt.splitright     = true
+vim.opt.scrolloff      = 4
+vim.opt.confirm        = true
+vim.opt.inccommand     = 'split' -- live preview of :s substitutions in a split
+vim.opt.smoothscroll   = true    -- smooth Ctrl-D/U scrolling (nvim 0.10+)
+vim.opt.mouse          = 'a'     -- mouse in all modes
+vim.opt.list           = true
+vim.opt.listchars      = { tab = '  ', trail = '·', nbsp = '␣' }
+
+vim.o.foldlevel        = 99
+vim.o.foldlevelstart   = 99

@@ -1,4 +1,5 @@
 local M = {}
+local H = {}
 
 local function wrap(f)
     local ok, err = pcall(f)
@@ -26,20 +27,21 @@ end
 -- Invalid type: notifies with ERROR and returns a no-op to prevent crashes.
 local function resolve(target)
     if type(target) == 'function' then return target end
+
     if type(target) == 'string' then
         return function()
             local mod = M.safe_require(target)
+
             if not mod then return end
-            if type(mod.setup) ~= 'function' then
-                vim.notify(
-                    ("lib: '%s' loaded but has no setup()"):format(target),
-                    vim.log.levels.WARN
-                )
-                return
+
+            if type(mod) ~= 'table' then return end
+
+            if type(mod.setup) == 'function' then
+                mod.setup()
             end
-            mod.setup()
         end
     end
+
     vim.notify(
         ("lib: invalid target type '%s'"):format(type(target)),
         vim.log.levels.ERROR
@@ -66,15 +68,15 @@ end
 
 -- One-per-tick queue: each later() task runs on its own event-loop tick so
 -- the UI can redraw between tasks.
-local queue, draining = {}, false
+H.queue, H.draining = {}, false
 local function drain()
-    if draining or #queue == 0 then return end
-    draining = true
+    if H.draining or #H.queue == 0 then return end
+    H.draining = true
 
     vim.schedule(function()
-        local f = table.remove(queue, 1)
+        local f = table.remove(H.queue, 1)
         wrap(f)
-        draining = false
+        H.draining = false
         drain()
     end)
 end
@@ -83,26 +85,41 @@ M.now = function(target)
     wrap(resolve(target))
 end
 
-local later_group = M.augroup("LibLaterStart")
-local has_autocmd = false
+H.later_group = M.augroup("LibLaterStart")
+H.has_autocmd = false
 
+--- Defers the execution of a target to keep the main thread responsive.
+---
+--- Targets are placed in a one-per-tick FIFO queue. If the editor is still
+--- starting up, the queue waits for the `VimEnter` event. Otherwise, it
+--- begins processing immediately via `vim.schedule`.
+---
+--- Target resolution:
+--- - `function`: Executed as-is.
+--- - `string`: Treated as a module name. It is safely required, and its
+---   `.setup()` function is called *only* if the module returns a table
+---   that actually contains one.
+---
+---@param target string|function The module name to require, or a function to call.
 M.later = function(target)
-    table.insert(queue, resolve(target))
+    table.insert(H.queue, resolve(target))
+
     if vim.v.vim_did_enter == 1 then
         drain()
-    else
-        if not has_autocmd then
-            has_autocmd = true
-            vim.api.nvim_create_autocmd("VimEnter", {
-                group = later_group,
-                once = true,
-                callback = function()
-                    drain()
+        return
+    end
 
-                    vim.api.nvim_del_augroup_by_id(later_group)
-                end
-            })
-        end
+    if not H.has_autocmd then
+        H.has_autocmd = true
+        vim.api.nvim_create_autocmd("VimEnter", {
+            group = H.later_group,
+            once = true,
+            callback = function()
+                drain()
+
+                vim.api.nvim_del_augroup_by_id(H.later_group)
+            end
+        })
     end
 end
 
@@ -126,6 +143,15 @@ M.on_event = function(events, target, pattern)
     })
 end
 
+--- Defers the execution of a target until a specific filetype is opened.
+---
+--- This function safely manages the plugin lifecycle by allowing nested
+--- events for proper initialization, aggressively self-deleting the
+--- autocmd to prevent reentrancy loops, and deferring the actual load
+--- to the event loop (`vim.schedule`) to keep the editor UI responsive.
+---
+---@param filetypes string|string[] The filetype pattern(s) to match (e.g., "go", "lua").
+---@param target string|function The module name to require, or a function to call.
 M.on_filetype = function(filetypes, target)
     local target_key = get_target_key(target)
     local group = M.augroup('LibLazyFiletype_' .. target_key)
@@ -133,11 +159,21 @@ M.on_filetype = function(filetypes, target)
     vim.api.nvim_create_autocmd("FileType", {
         group    = group,
         pattern  = filetypes,
-        once     = true,
+        -- Allow nested events so the loaded plugin can trigger its own
+        -- syntax or initialization autocmds seamlessly.
+        nested   = true,
         callback = function()
-            wrap(resolve(target))
-
+            -- Immediately delete the autocmd group before executing the target.
+            -- This prevents infinite recursion if the plugin happens to open
+            -- another buffer or trigger the same filetype internally.
             vim.api.nvim_del_augroup_by_id(group)
+
+            -- Defer the actual loading process to the next event loop tick.
+            -- This allows Neovim to immediately render the newly opened file
+            -- to the screen without causing the UI to freeze.
+            vim.schedule(function()
+                wrap(resolve(target))
+            end)
         end,
     })
 end

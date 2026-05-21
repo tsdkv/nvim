@@ -16,10 +16,11 @@ local function check_server_config(config)
     check_type('name', config.name, 'string', false)
     check_type('filetypes', config.filetypes, 'table', true)
     check_type('tools', config.tools, 'table', true)
-    check_type('setup', config.setup, 'function', false)
+    check_type('setup', config.setup, 'function', true)
     check_type('on_attach', config.on_attach, 'function', true)
 end
 
+local load = require('core.load')
 
 function M.setup()
     vim.diagnostic.config({
@@ -45,15 +46,11 @@ function M.setup()
             handlers[mod.name] = mod.on_attach
         end
         if mod.filetypes and mod.setup then
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern  = mod.filetypes,
-                once     = true,
-                callback = mod.setup,
-            })
+            load.on_filetype(mod.filetypes, mod.setup)
         end
     end
 
-    require('lib').later(function()
+    load.later(function()
         require('mason-tool-installer').setup({
             ensure_installed = tools,
         })
@@ -64,9 +61,13 @@ function M.setup()
         callback = function(ev)
             local client = vim.lsp.get_client_by_id(ev.data.client_id)
             if not client then return end
+
             attach.on_attach(client, ev.buf)
+
             local handler = handlers[client.name]
-            if handler then handler(client, ev.buf) end
+            if handler then
+                handler(client, ev.buf)
+            end
         end,
     })
 end
