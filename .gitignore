@@ -1,0 +1,8 @@
+# Agent directories
+.antigravitycli/
+
+# Neovim swap, backup, and undo files
+*.swp
+*.swo
+*.swn
+*.undo

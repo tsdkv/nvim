@@ -12,9 +12,9 @@ Open Neovim — plugins install automatically via the built-in `vim.pack` packag
 
 ## Structure
 
-```
+```text
 lua/
-├── lib/          # scheduler helpers (now/later/on_event/on_key)
+├── core/load/    # scheduler helpers (now/later/on_event/on_key/on_filetype)
 ├── config/       # options, keymaps, autocmds, commands
 └── plugins/      # one file per plugin, each exports M.setup()
 ```
