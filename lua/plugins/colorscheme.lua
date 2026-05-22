@@ -44,6 +44,20 @@ function M.setup()
             vim.api.nvim_set_hl(0, "NeoTreeTabSeparatorInactive", { bg = normal_bg, fg = normal_bg })
 
             vim.api.nvim_set_hl(0, "NeoTreeWinSeparator", { link = "WinSeparator" })
+
+            -- bookmarks
+            vim.api.nvim_set_hl(0, "BookMarksAdd", { fg = '#88c0d0', bg = "NONE", default = false })
+            vim.api.nvim_set_hl(0, "BookMarksAnn", { fg = '#88c0d0', bg = "NONE", default = false })
+
+            --mini.jump2d TODO
+            -- Обычные точки прыжка: белый текст на бирюзовом фоне (Nord Frost)
+            vim.api.nvim_set_hl(0, 'MiniJump2dSpot', { fg = '#ECEFF4', bg = '#8FBCBB', bold = true })
+            -- Уникальные точки (в один клик): белый текст на зеленом фоне (Nord Aurora Green)
+            vim.api.nvim_set_hl(0, 'MiniJump2dSpotUnique', { fg = '#ECEFF4', bg = '#A3BE8C', bold = true })
+            -- Дальние точки прыжка: просто синеватый текст без фона (Nord Frost Deep)
+            vim.api.nvim_set_hl(0, 'MiniJump2dSpotAhead', { fg = '#81A1C1', bg = 'NONE' })
+            -- Приглушение остального кода: уводим в мягкий серый (Nord Polar Night)
+            vim.api.nvim_set_hl(0, 'MiniJump2dDim', { fg = '#4C566A', nocombine = true })
         end,
     })
 

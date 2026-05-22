@@ -32,8 +32,6 @@ function M.setup()
         float            = { border = 'rounded', source = true, header = '', prefix = '' },
     })
 
-    require('mason').setup({})
-
     local servers  = discover_servers()
     local tools    = {}
     local handlers = {}
