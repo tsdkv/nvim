@@ -50,6 +50,7 @@ load.now('plugins.treesitter') -- treesitter doesn't support lazy loading
 load.later(function()
     require('neoscroll').setup({
         cursor_scrolls_alone = false, -- The cursor will keep on scrolling even if the window cannot scroll further
+        stop_eof = false,
     })
 end)
 

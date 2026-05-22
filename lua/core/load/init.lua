@@ -85,7 +85,7 @@ M.now = function(target)
     wrap(resolve(target))
 end
 
-H.later_group = M.augroup("LibLaterStart")
+H.later_group = M.augroup("CoreLoadLaterStart")
 H.has_autocmd = false
 
 --- Defers the execution of a target to keep the main thread responsive.
@@ -129,7 +129,7 @@ end
 
 M.on_event = function(events, target, pattern)
     local target_key = get_target_key(target)
-    local group = M.augroup('LibLazyLoadOnEvent_' .. target_key)
+    local group = M.augroup('CoreLoadLoadOnEvent_' .. target_key)
 
     vim.api.nvim_create_autocmd(events, {
         once     = true,
@@ -154,7 +154,7 @@ end
 ---@param target string|function The module name to require, or a function to call.
 M.on_filetype = function(filetypes, target)
     local target_key = get_target_key(target)
-    local group = M.augroup('LibLazyFiletype_' .. target_key)
+    local group = M.augroup('CoreLoadFiletype_' .. target_key)
 
     vim.api.nvim_create_autocmd("FileType", {
         group    = group,
