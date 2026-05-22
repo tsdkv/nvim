@@ -12,6 +12,7 @@ vim.pack.add({
     gh('folke/zen-mode.nvim'),
     gh('kdheepak/lazygit.nvim'),
     gh('lewis6991/gitsigns.nvim'),
+    gh('karb94/neoscroll.nvim'),
 
     gh("m4xshen/hardtime.nvim"),
 
@@ -45,6 +46,12 @@ load.now('plugins.colorscheme')
 load.now('plugins.which-key')
 load.now('plugins.neo-tree')
 load.now('plugins.treesitter') -- treesitter doesn't support lazy loading
+
+load.later(function()
+    require('neoscroll').setup({
+        cursor_scrolls_alone = false, -- The cursor will keep on scrolling even if the window cannot scroll further
+    })
+end)
 
 -- Deferred: one per event-loop tick to keep startup responsive
 load.later('plugins.mini')
