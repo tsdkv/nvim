@@ -4,12 +4,6 @@ local load_lib = function()
 end
 
 describe("Configuration Loader Framework", function()
-    it('safe_require', function()
-        local load = load_lib()
-        local result = load.safe_require("plugin_that_does_not_exist_123")
-
-        assert.is_nil(result)
-    end)
 
     it("should execute M.now immediately", function()
         local load = load_lib()
@@ -86,7 +80,7 @@ describe("Configuration Loader Framework", function()
         assert(vim.v.vim_did_enter == 0, "check vim_did_enter == 0")
 
         local autocmds = vim.api.nvim_get_autocmds({
-            group = "LibLaterStart",
+            group = "CoreLoadLaterStart",
             event = "VimEnter"
         })
 
@@ -107,7 +101,7 @@ describe("Configuration Loader Framework", function()
         -- Since the group might be completely deleted from Neovim's memory (which is great!),
         -- nvim_get_autocmds will throw an error if called directly. We use pcall to catch it.
         local group_exists = pcall(vim.api.nvim_get_autocmds, {
-            group = "LibLaterStart",
+            group = "CoreLoadLaterStart",
             event = "VimEnter"
         })
 

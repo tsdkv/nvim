@@ -1,52 +1,27 @@
 local M = {}
 local H = {}
 
-local function wrap(f)
+local function wrap(f, label)
     local ok, err = pcall(f)
     if not ok then
-        vim.notify("Config Error: " .. tostring(err), vim.log.levels.WARN)
+        local msg = label
+            and ("Config Error [%s]: %s"):format(label, tostring(err))
+            or  ("Config Error: %s"):format(tostring(err))
+        vim.notify(msg, vim.log.levels.WARN)
     end
 end
 
-M.augroup = function(name)
+H.augroup = function(name)
     return vim.api.nvim_create_augroup(name, { clear = true })
 end
 
-M.safe_require = function(name)
+H.safe_require = function(name)
     local ok, mod = pcall(require, name)
     if not ok then
         vim.notify("Failed to load: " .. name, vim.log.levels.WARN)
         return nil
     end
     return mod
-end
-
--- Resolves a target (string module name or function) into a callable.
--- String: safe_require the module, then call .setup() if it exists.
--- Function: used as-is.
--- Invalid type: notifies with ERROR and returns a no-op to prevent crashes.
-local function resolve(target)
-    if type(target) == 'function' then return target end
-
-    if type(target) == 'string' then
-        return function()
-            local mod = M.safe_require(target)
-
-            if not mod then return end
-
-            if type(mod) ~= 'table' then return end
-
-            if type(mod.setup) == 'function' then
-                mod.setup()
-            end
-        end
-    end
-
-    vim.notify(
-        ("lib: invalid target type '%s'"):format(type(target)),
-        vim.log.levels.ERROR
-    )
-    return function() end
 end
 
 -- Generates a clean, unique and stable string key for any target type
@@ -66,6 +41,54 @@ local function get_target_key(target)
     return tostring(target):gsub("[^%w]", "_")
 end
 
+-- H.done tracks which string targets have already been executed,
+-- preventing double-setup when the same module is scheduled from multiple places.
+H.done = {}
+
+-- Resolves a target (string module name or function) into a callable.
+-- String: safe_require the module, then call .setup() if it exists.
+--         Wrapped in H.done guard to ensure setup() runs at most once.
+-- Function: used as-is.
+-- Invalid type: notifies with ERROR and returns a no-op to prevent crashes.
+local function resolve(target)
+    if type(target) == 'function' then return target end
+
+    if type(target) == 'string' then
+        return function()
+            if H.done[target] then return end
+            H.done[target] = true
+
+            local mod = H.safe_require(target)
+
+            if not mod then return end
+
+            if type(mod) ~= 'table' then return end
+
+            if type(mod.setup) == 'function' then
+                mod.setup()
+            end
+        end
+    end
+
+    vim.notify(
+        ("lib: invalid target type '%s'"):format(type(target)),
+        vim.log.levels.ERROR
+    )
+    return function() end
+end
+
+-- For lazy triggers (on_cmd, on_event, on_filetype): immediately require a
+-- string target and call its .register() if it exists. This registers keymaps
+-- and other declarations eagerly (e.g. into which-key) while deferring the
+-- heavy .setup() call to the actual trigger.
+local function early_register(target)
+    if type(target) ~= 'string' then return end
+    local ok, mod = pcall(require, target)
+    if ok and type(mod) == 'table' and type(mod.register) == 'function' then
+        wrap(mod.register, target .. ':register')
+    end
+end
+
 -- One-per-tick queue: each later() task runs on its own event-loop tick so
 -- the UI can redraw between tasks.
 H.queue, H.draining = {}, false
@@ -74,18 +97,18 @@ local function drain()
     H.draining = true
 
     vim.schedule(function()
-        local f = table.remove(H.queue, 1)
-        wrap(f)
+        local item = table.remove(H.queue, 1)
+        wrap(item.fn, item.label)
         H.draining = false
         drain()
     end)
 end
 
 M.now = function(target)
-    wrap(resolve(target))
+    wrap(resolve(target), get_target_key(target))
 end
 
-H.later_group = M.augroup("CoreLoadLaterStart")
+H.later_group = H.augroup("CoreLoadLaterStart")
 H.has_autocmd = false
 
 --- Defers the execution of a target to keep the main thread responsive.
@@ -102,7 +125,7 @@ H.has_autocmd = false
 ---
 ---@param target string|function The module name to require, or a function to call.
 M.later = function(target)
-    table.insert(H.queue, resolve(target))
+    table.insert(H.queue, { fn = resolve(target), label = get_target_key(target) })
 
     if vim.v.vim_did_enter == 1 then
         drain()
@@ -123,20 +146,18 @@ M.later = function(target)
     end
 end
 
-M.now_if_args = function(f)
-    if vim.fn.argc(-1) > 0 then M.now(f) else M.later(f) end
-end
-
 M.on_event = function(events, target, pattern)
+    early_register(target)
+
     local target_key = get_target_key(target)
-    local group = M.augroup('CoreLoadLoadOnEvent_' .. target_key)
+    local group = H.augroup('CoreLoadLoadOnEvent_' .. target_key)
 
     vim.api.nvim_create_autocmd(events, {
         once     = true,
         group    = group,
         pattern  = pattern,
         callback = function()
-            wrap(resolve(target))
+            wrap(resolve(target), target_key)
 
             vim.api.nvim_del_augroup_by_id(group)
         end,
@@ -150,11 +171,16 @@ end
 --- autocmd to prevent reentrancy loops, and deferring the actual load
 --- to the event loop (`vim.schedule`) to keep the editor UI responsive.
 ---
+--- If a buffer with a matching filetype is already open at registration
+--- time, the target is scheduled immediately and the autocmd is skipped.
+---
 ---@param filetypes string|string[] The filetype pattern(s) to match (e.g., "go", "lua").
 ---@param target string|function The module name to require, or a function to call.
 M.on_filetype = function(filetypes, target)
+    early_register(target)
+
     local target_key = get_target_key(target)
-    local group = M.augroup('CoreLoadFiletype_' .. target_key)
+    local group = H.augroup('CoreLoadFiletype_' .. target_key)
 
     vim.api.nvim_create_autocmd("FileType", {
         group    = group,
@@ -172,36 +198,39 @@ M.on_filetype = function(filetypes, target)
             -- This allows Neovim to immediately render the newly opened file
             -- to the screen without causing the UI to freeze.
             vim.schedule(function()
-                wrap(resolve(target))
+                wrap(resolve(target), target_key)
             end)
         end,
     })
-end
 
--- Stub keymap: on first press removes itself, runs the target, then replays
--- the key so the real handler (registered by target's setup) fires.
--- If setup fails, notifies and skips replay to avoid triggering an unregistered handler.
-M.on_key = function(lhs, target, mode)
-    mode = mode or 'n'
-    local fn = resolve(target)
-    vim.keymap.set(mode, lhs, function()
-        pcall(vim.keymap.del, mode, lhs)
-        local ok, err = pcall(fn)
-        if not ok then
-            vim.notify("Config Error: " .. tostring(err), vim.log.levels.WARN)
+    -- Handle buffers already open at registration time: if a matching filetype
+    -- is already loaded, skip the autocmd entirely and schedule immediately.
+    local fts = type(filetypes) == 'table' and filetypes or { filetypes }
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.tbl_contains(fts, vim.bo[buf].filetype) then
+            vim.api.nvim_del_augroup_by_id(group)
+            vim.schedule(function()
+                wrap(resolve(target), target_key)
+            end)
             return
         end
-        vim.api.nvim_feedkeys(
-            vim.api.nvim_replace_termcodes(lhs, true, false, true),
-            'm', false
-        )
-    end, { silent = true })
+    end
 end
 
--- Stub command: on first invocation removes itself, runs the target, then
--- re-executes the command with original args.
--- If setup fails, notifies and skips replay to avoid running a missing command.
+--- Registers a stub user command that lazy-loads a target on first invocation.
+---
+--- The stub removes itself, runs the target's setup, then re-executes the
+--- original command with its arguments so the real handler fires transparently.
+--- If setup fails, the replay is skipped to avoid running a missing command.
+---
+--- If the target module exports a `.register()` function, it is called
+--- immediately (at declaration time) to allow eager keymap/which-key registration.
+---
+---@param name string The user command name to stub (e.g. 'Telescope').
+---@param target string|function The module name to require, or a function to call.
 M.on_cmd = function(name, target)
+    early_register(target)
+
     local fn = resolve(target)
     vim.api.nvim_create_user_command(name, function(opts)
         vim.api.nvim_del_user_command(name)
@@ -212,6 +241,32 @@ M.on_cmd = function(name, target)
         end
         vim.cmd(name .. (opts.args ~= '' and ' ' .. opts.args or ''))
     end, { nargs = '*' })
+end
+
+--- Returns true if the target has already been executed by the loader.
+--- Only reliable for string targets; function targets use a debug-info key.
+---
+---@param target string|function
+---@return boolean
+M.loaded = function(target)
+    return H.done[get_target_key(target)] == true
+end
+
+--- Executes target immediately if it has not already been loaded.
+--- Idempotent: safe to call multiple times or from multiple places.
+--- Intended for explicit dependency management inside setup() functions.
+---
+--- Example:
+---   M.setup = function()
+---       load.ensure('mason')  -- guarantee mason is ready before continuing
+---       require('mason-tool-installer').setup({ ... })
+---   end
+---
+---@param target string|function The module name to require, or a function to call.
+M.ensure = function(target)
+    local key = get_target_key(target)
+    if H.done[key] then return end
+    wrap(resolve(target), key)
 end
 
 

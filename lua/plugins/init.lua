@@ -70,11 +70,9 @@ load.on_event({ 'BufReadPre', 'BufNewFile' }, 'plugins.lsp')
 
 load.later('plugins.bookmarks')
 
--- Key-driven: telescope lazy-loads on first telescope keypress
-load.on_key('<leader>ff', 'plugins.telescope')
-load.on_key('<leader>fg', 'plugins.telescope')
-load.on_key('<leader>fb', 'plugins.telescope')
-load.on_key('<leader>f<cr>', 'plugins.telescope')
+-- Command-driven: telescope lazy-loads on first :Telescope call.
+-- M.register() is called immediately by on_cmd to populate which-key upfront.
+load.on_cmd('Telescope', 'plugins.telescope')
 
--- Key-driven: zen-mode lazy-loads on first keypress
-load.on_key('<leader>z', 'plugins.zen-mode')
+-- Command-driven: zen-mode lazy-loads on first :ZenMode call.
+load.on_cmd('ZenMode', 'plugins.zen-mode')
