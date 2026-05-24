@@ -37,7 +37,6 @@ vim.pack.add({
 
     { src = gh("nvim-mini/mini.comment"), version = "stable" },
     { src = gh("nvim-mini/mini.bufremove"), version = "stable" },
-
     { src = gh("nvim-mini/mini.tabline"), version = "stable" },
     { src = gh("nvim-mini/mini.statusline"), version = "stable" },
     { src = gh("nvim-mini/mini.notify"), version = "stable" },

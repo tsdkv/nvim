@@ -51,11 +51,6 @@
       "src": "https://github.com/nvim-mini/mini.comment",
       "version": "'stable'"
     },
-    "mini.completion": {
-      "rev": "7c5edfc0e479dd4edd898cc9ddd1920d8c1ce420",
-      "src": "https://github.com/nvim-mini/mini.completion",
-      "version": "'stable'"
-    },
     "mini.jump2d": {
       "rev": "7a089cb719adb7c2faa2a859038d69d58fcbee84",
       "src": "https://github.com/nvim-mini/mini.jump2d",
