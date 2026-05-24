@@ -12,6 +12,7 @@ end
 
 require('config.options')
 require('config.keymap')
+require('config.terminal')
 require('config.autocmds')
 require('config.commands')
 require('plugins')

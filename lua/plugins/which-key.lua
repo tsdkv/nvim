@@ -11,6 +11,7 @@ function M.setup()
         { "<leader>l", group = "LSP / Code" },
         { "<leader>d", group = "Diagnostics" },
         { "<leader>u", group = "UI" },
+        { "<leader>t", group = "Terminal" },
     })
 end
 
