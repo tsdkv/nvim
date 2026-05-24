@@ -3,7 +3,7 @@ local M = {}
 M.setup = function()
     local git_available = vim.fn.executable("git") == 1
 
-    require('neo-tree').setup({
+    require("neo-tree").setup({
         close_if_last_window = true,
         enable_git_status = git_available,
         auto_clean_after_session_restore = true,
@@ -12,7 +12,7 @@ M.setup = function()
         source_selector = {
             winbar = true,
             content_layout = "center",
-            truncation_character = '',
+            truncation_character = "",
             sources = {
                 { source = "filesystem", display_name = " 󰉓 Files " },
                 { source = "git_status", display_name = " 󰊢 Git " },
@@ -44,12 +44,12 @@ M.setup = function()
             directory = {
                 { "indent" },
                 { "icon" },
-                { "name",  is_name_only = true },
+                { "name", is_name_only = true },
             },
             file = {
                 { "indent" },
                 { "icon" },
-                { "name",    is_name_only = true },
+                { "name", is_name_only = true },
                 { "modified" },
             },
         },
@@ -117,11 +117,10 @@ M.setup = function()
                 end,
             },
         },
-
     })
 
-    require('which-key').add({
-        { '<leader>e', '<Cmd>Neotree<CR>', desc = 'Toggle explorer' }
+    require("which-key").add({
+        { "<leader>e", "<Cmd>Neotree<CR>", desc = "Toggle explorer" },
     })
 end
 

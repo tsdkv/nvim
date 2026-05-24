@@ -4,9 +4,8 @@ local H = {}
 local function wrap(f, label)
     local ok, err = pcall(f)
     if not ok then
-        local msg = label
-            and ("Config Error [%s]: %s"):format(label, tostring(err))
-            or  ("Config Error: %s"):format(tostring(err))
+        local msg = label and ("Config Error [%s]: %s"):format(label, tostring(err))
+            or ("Config Error: %s"):format(tostring(err))
         vim.notify(msg, vim.log.levels.WARN)
     end
 end
@@ -51,29 +50,34 @@ H.done = {}
 -- Function: used as-is.
 -- Invalid type: notifies with ERROR and returns a no-op to prevent crashes.
 local function resolve(target)
-    if type(target) == 'function' then return target end
+    if type(target) == "function" then
+        return target
+    end
 
-    if type(target) == 'string' then
+    if type(target) == "string" then
         return function()
-            if H.done[target] then return end
+            if H.done[target] then
+                return
+            end
             H.done[target] = true
 
             local mod = H.safe_require(target)
 
-            if not mod then return end
+            if not mod then
+                return
+            end
 
-            if type(mod) ~= 'table' then return end
+            if type(mod) ~= "table" then
+                return
+            end
 
-            if type(mod.setup) == 'function' then
+            if type(mod.setup) == "function" then
                 mod.setup()
             end
         end
     end
 
-    vim.notify(
-        ("lib: invalid target type '%s'"):format(type(target)),
-        vim.log.levels.ERROR
-    )
+    vim.notify(("lib: invalid target type '%s'"):format(type(target)), vim.log.levels.ERROR)
     return function() end
 end
 
@@ -82,10 +86,12 @@ end
 -- and other declarations eagerly (e.g. into which-key) while deferring the
 -- heavy .setup() call to the actual trigger.
 local function early_register(target)
-    if type(target) ~= 'string' then return end
+    if type(target) ~= "string" then
+        return
+    end
     local ok, mod = pcall(require, target)
-    if ok and type(mod) == 'table' and type(mod.register) == 'function' then
-        wrap(mod.register, target .. ':register')
+    if ok and type(mod) == "table" and type(mod.register) == "function" then
+        wrap(mod.register, target .. ":register")
     end
 end
 
@@ -93,7 +99,9 @@ end
 -- the UI can redraw between tasks.
 H.queue, H.draining = {}, false
 local function drain()
-    if H.draining or #H.queue == 0 then return end
+    if H.draining or #H.queue == 0 then
+        return
+    end
     H.draining = true
 
     vim.schedule(function()
@@ -141,7 +149,7 @@ M.later = function(target)
                 drain()
 
                 vim.api.nvim_del_augroup_by_id(H.later_group)
-            end
+            end,
         })
     end
 end
@@ -150,12 +158,12 @@ M.on_event = function(events, target, pattern)
     early_register(target)
 
     local target_key = get_target_key(target)
-    local group = H.augroup('CoreLoadLoadOnEvent_' .. target_key)
+    local group = H.augroup("CoreLoadLoadOnEvent_" .. target_key)
 
     vim.api.nvim_create_autocmd(events, {
-        once     = true,
-        group    = group,
-        pattern  = pattern,
+        once = true,
+        group = group,
+        pattern = pattern,
         callback = function()
             wrap(resolve(target), target_key)
 
@@ -180,14 +188,14 @@ M.on_filetype = function(filetypes, target)
     early_register(target)
 
     local target_key = get_target_key(target)
-    local group = H.augroup('CoreLoadFiletype_' .. target_key)
+    local group = H.augroup("CoreLoadFiletype_" .. target_key)
 
     vim.api.nvim_create_autocmd("FileType", {
-        group    = group,
-        pattern  = filetypes,
+        group = group,
+        pattern = filetypes,
         -- Allow nested events so the loaded plugin can trigger its own
         -- syntax or initialization autocmds seamlessly.
-        nested   = true,
+        nested = true,
         callback = function()
             -- Immediately delete the autocmd group before executing the target.
             -- This prevents infinite recursion if the plugin happens to open
@@ -205,7 +213,7 @@ M.on_filetype = function(filetypes, target)
 
     -- Handle buffers already open at registration time: if a matching filetype
     -- is already loaded, skip the autocmd entirely and schedule immediately.
-    local fts = type(filetypes) == 'table' and filetypes or { filetypes }
+    local fts = type(filetypes) == "table" and filetypes or { filetypes }
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
         if vim.tbl_contains(fts, vim.bo[buf].filetype) then
             vim.api.nvim_del_augroup_by_id(group)
@@ -239,8 +247,8 @@ M.on_cmd = function(name, target)
             vim.notify("Config Error: " .. tostring(err), vim.log.levels.WARN)
             return
         end
-        vim.cmd(name .. (opts.args ~= '' and ' ' .. opts.args or ''))
-    end, { nargs = '*' })
+        vim.cmd(name .. (opts.args ~= "" and " " .. opts.args or ""))
+    end, { nargs = "*" })
 end
 
 --- Returns true if the target has already been executed by the loader.
@@ -265,9 +273,10 @@ end
 ---@param target string|function The module name to require, or a function to call.
 M.ensure = function(target)
     local key = get_target_key(target)
-    if H.done[key] then return end
+    if H.done[key] then
+        return
+    end
     wrap(resolve(target), key)
 end
-
 
 return M

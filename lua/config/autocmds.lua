@@ -1,12 +1,14 @@
 -- Yank highlight
-vim.api.nvim_create_autocmd('TextYankPost', {
-    group    = vim.api.nvim_create_augroup('YankHighlight', { clear = true }),
-    callback = function() vim.hl.on_yank() end,
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
+    callback = function()
+        vim.hl.on_yank()
+    end,
 })
 
 -- Restore cursor to last known position when reopening a file
-vim.api.nvim_create_autocmd('BufReadPost', {
-    group    = vim.api.nvim_create_augroup('RestoreCursor', { clear = true }),
+vim.api.nvim_create_autocmd("BufReadPost", {
+    group = vim.api.nvim_create_augroup("RestoreCursor", { clear = true }),
     callback = function(ev)
         local mark = vim.api.nvim_buf_get_mark(ev.buf, '"')
         if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(ev.buf) then
@@ -16,32 +18,36 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 })
 
 -- Reload buffers changed on disk when nvim regains focus
-vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave' }, {
-    group    = vim.api.nvim_create_augroup('CheckTime', { clear = true }),
-    callback = function() vim.cmd('checktime') end,
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+    group = vim.api.nvim_create_augroup("CheckTime", { clear = true }),
+    callback = function()
+        vim.cmd("checktime")
+    end,
 })
 
 -- Equalize splits when the terminal window is resized
-vim.api.nvim_create_autocmd('VimResized', {
-    group    = vim.api.nvim_create_augroup('ResizeWindows', { clear = true }),
-    callback = function() vim.cmd('wincmd =') end,
+vim.api.nvim_create_autocmd("VimResized", {
+    group = vim.api.nvim_create_augroup("ResizeWindows", { clear = true }),
+    callback = function()
+        vim.cmd("wincmd =")
+    end,
 })
 
 -- Close utility/readonly windows with just q
-vim.api.nvim_create_autocmd('FileType', {
-    group   = vim.api.nvim_create_augroup('CloseWithQ', { clear = true }),
-    pattern = { 'help', 'qf', 'man', 'notify', 'lspinfo', 'startuptime', 'checkhealth' },
+vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("CloseWithQ", { clear = true }),
+    pattern = { "help", "qf", "man", "notify", "lspinfo", "startuptime", "checkhealth" },
     callback = function(ev)
-        vim.keymap.set('n', 'q', '<cmd>close<cr>', { buffer = ev.buf, silent = true })
+        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = ev.buf, silent = true })
     end,
 })
 
 -- 2-space indent for data/config file types (overrides global 4-space default)
-vim.api.nvim_create_autocmd('FileType', {
-    group   = vim.api.nvim_create_augroup('FileTypeIndent', { clear = true }),
-    pattern = { 'json', 'jsonc', 'yaml', 'toml', 'html', 'css' },
+vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("FileTypeIndent", { clear = true }),
+    pattern = { "json", "jsonc", "yaml", "toml", "html", "css" },
     callback = function()
-        vim.opt_local.tabstop    = 2
+        vim.opt_local.tabstop = 2
         vim.opt_local.shiftwidth = 2
     end,
 })
