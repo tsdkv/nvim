@@ -23,11 +23,6 @@ local function keymaps(bufnr)
         { "<leader>la", vim.lsp.buf.code_action,     desc = "Code Action",     mode = { "n", "v" } },
         { "<leader>lr", vim.lsp.buf.rename,          desc = "Rename Symbol" },
         { "<leader>ls", vim.lsp.buf.document_symbol, desc = "Document Symbols" },
-        {
-            "<leader>lf",
-            function() vim.lsp.buf.format({ async = true }) end,
-            desc = "Format Document",
-        },
 
         { "<leader>dd", vim.diagnostic.open_float, desc = "Line Diagnostics" },
         { "<leader>dq", vim.diagnostic.setloclist, desc = "Diagnostics List" },
@@ -66,13 +61,7 @@ local function document_highlight(_, bufnr)
     })
 end
 
-local function format_on_save(_, bufnr)
-    vim.api.nvim_create_autocmd('BufWritePre', {
-        group    = vim.api.nvim_create_augroup('LspFormatOnSave_' .. bufnr, { clear = true }),
-        buffer   = bufnr,
-        callback = function() vim.lsp.buf.format({ bufnr = bufnr, async = false }) end,
-    })
-end
+
 
 function M.on_attach(client, bufnr)
     keymaps(bufnr)
@@ -85,9 +74,7 @@ function M.on_attach(client, bufnr)
         document_highlight(client, bufnr)
     end
 
-    if client:supports_method("textDocument/formatting") then
-        format_on_save(client, bufnr)
-    end
+
 end
 
 return M

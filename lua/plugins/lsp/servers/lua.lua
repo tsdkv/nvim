@@ -1,7 +1,7 @@
 return {
     name      = 'lua_ls',
     filetypes = { 'lua' },
-    tools     = { 'lua-language-server' },
+    tools     = { 'lua-language-server', 'stylua' },
     setup     = function()
         vim.lsp.config('lua_ls', {
             cmd          = { 'lua-language-server' },

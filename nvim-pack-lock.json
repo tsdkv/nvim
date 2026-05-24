@@ -9,6 +9,10 @@
       "rev": "0540d52ba64d0ec7677ec1ef14b3624c95a2aaba",
       "src": "https://github.com/tomasky/bookmarks.nvim"
     },
+    "conform.nvim": {
+      "rev": "24c70347f6b2128679f47d2eb765156ef34bf9e0",
+      "src": "https://github.com/stevearc/conform.nvim"
+    },
     "friendly-snippets": {
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
       "src": "https://github.com/rafamadriz/friendly-snippets"

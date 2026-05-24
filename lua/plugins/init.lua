@@ -26,6 +26,7 @@ vim.pack.add({
     },
 
     gh('rafamadriz/friendly-snippets'),
+    gh('stevearc/conform.nvim'),
     {
         src = gh('saghen/blink.cmp'),
         version = vim.version.range('1'),
@@ -62,6 +63,7 @@ end)
 -- Deferred: one per event-loop tick to keep startup responsive
 load.later('plugins.mini')
 load.later('plugins.blink')
+load.later('plugins.conform')
 load.later('plugins.git')
 load.later('mason')
 load.later('hardtime')
