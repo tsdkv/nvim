@@ -63,6 +63,9 @@ M.setup = function()
         window = {
             width = 30,
             mappings = {
+                ["<esc>"] = function()
+                    vim.cmd("wincmd p")
+                end,
                 ["<Space>"] = false,
                 ["h"] = function(state)
                     local node = state.tree:get_node()

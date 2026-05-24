@@ -58,6 +58,7 @@ function M.setup()
     load.later(function()
         require("mason-tool-installer").setup({
             ensure_installed = tools,
+            run_on_start = true,
         })
     end)
 
