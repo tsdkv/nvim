@@ -43,12 +43,13 @@ The `core.load` module (located in [lua/core/load/init.lua](file:///Users/tmac/.
 | `later` | `load.later(target)` | Defer loading to a one-per-tick queue starting after `VimEnter`. |
 | `on_event` | `load.on_event(events, target, pattern)` | Load a module when specific autocommand events fire (e.g., `BufReadPre`). |
 | `on_filetype` | `load.on_filetype(filetypes, target)` | Defer loading until a specific filetype buffer is opened. |
-| `on_key` | `load.on_key(lhs, target, mode)` | Lazy-load on keypress. Removes stub, runs setup, and replays keypress. |
 | `on_cmd` | `load.on_cmd(name, target)` | Lazy-load on user command. Removes stub, runs setup, and replays command. |
+| `loaded` | `load.loaded(target)` | Returns true if the target has already been executed by the loader. |
+| `ensure` | `load.ensure(target)` | Executes target immediately if it has not already been loaded. Safe to call multiple times. |
 
 ### target resolution
 A `target` can be:
-- **A string**: Re-directed to safe-require the module and automatically invoke its `.setup()` function if it exists.
+- **A string**: Re-directed to safe-require the module and automatically invoke its `.setup()` function if it exists. For lazy triggers (`on_cmd`, `on_event`, `on_filetype`), if the module exports a `.register()` function, it is called *eagerly* to register keymaps/commands while deferring the heavy `.setup()` call.
 - **A function**: Executed directly.
 
 ---
@@ -62,17 +63,28 @@ To integrate a new plugin, follow these steps:
    ```lua
    vim.pack.add({
        -- ... existing plugins
-       { src = gh('username/repo-name') },
+       { src = gh("username/repo-name") },
    })
    ```
 
-2. **Configure the Plugin**:
+2. **Read the Plugin Documentation (AI Skill)**:
+   Before writing any configuration, you MUST read the plugin's documentation. Since `vim.pack.add` automatically downloads the plugin, you can access the documentation locally via terminal without needing to search the web!
+   Run this command in the terminal to dump the documentation to a file:
+   ```sh
+   # First run triggers the download of the plugin
+   nvim --headless "+qall!"
+   # Second run extracts the help page
+   nvim --headless "+help <plugin_name>" "+w! /tmp/plugin_help.txt" "+qall!"
+   ```
+   Then read `/tmp/plugin_help.txt` to understand the default configuration options, setup requirements, and recommended keybindings. Only proceed to configuration *after* reading this.
+
+3. **Configure the Plugin**:
    Create a new file `lua/plugins/<plugin_name>.lua`. The file must return a module containing a `setup` function:
    ```lua
    local M = {}
 
    M.setup = function()
-       require('plugin-name').setup({
+       require("plugin-name").setup({
            -- configuration options
        })
    end
@@ -80,27 +92,23 @@ To integrate a new plugin, follow these steps:
    return M
    ```
 
-3. **Schedule the Loading**:
+4. **Schedule the Loading**:
    In [lua/plugins/init.lua](file:///Users/tmac/.config/nvim/lua/plugins/init.lua), schedule how the plugin configuration is resolved using `core.load`:
    - **Eager/Immediate** (rare, only for themes or core UI):
      ```lua
-     load.now('plugins.plugin_name')
+     load.now("plugins.plugin_name")
      ```
    - **Deferred** (common for minor status/utility plugins):
      ```lua
-     load.later('plugins.plugin_name')
+     load.later("plugins.plugin_name")
      ```
    - **On FileType** (common for language-specific plugins/linters):
      ```lua
-     load.on_filetype('markdown', 'plugins.plugin_name')
+     load.on_filetype("markdown", "plugins.plugin_name")
      ```
    - **On Event**:
      ```lua
-     load.on_event({ 'BufReadPre', 'BufNewFile' }, 'plugins.plugin_name')
-     ```
-   - **On Keypress** (common for exploratory/heavy tools like fuzzy finders):
-     ```lua
-     load.on_key('<leader>p', 'plugins.plugin_name')
+     load.on_event({ "BufReadPre", "BufNewFile" }, "plugins.plugin_name")
      ```
 
 ---

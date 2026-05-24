@@ -67,6 +67,7 @@ load.later("plugins.conform")
 load.later("plugins.git")
 load.later("mason")
 load.later("hardtime")
+load.later("plugins.bookmarks")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
@@ -75,8 +76,6 @@ load.on_filetype("lua", "lazydev")
 -- it auto-discovers server modules under plugins/lsp/servers/ and
 -- arranges its own FileType-driven lazy setup for each.
 load.on_event({ "BufReadPre", "BufNewFile" }, "plugins.lsp")
-
-load.later("plugins.bookmarks")
 
 -- Command-driven: telescope lazy-loads on first :Telescope call.
 -- M.register() is called immediately by on_cmd to populate which-key upfront.
