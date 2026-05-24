@@ -52,7 +52,7 @@ local function inlay_hints(bufnr)
     }, { noremap = true, silent = true, buffer = bufnr })
 end
 
-local function document_highlight(_client, bufnr)
+local function document_highlight(_, bufnr)
     local group = vim.api.nvim_create_augroup('LspDocumentHighlight_' .. bufnr, { clear = true })
     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
         group    = group,
@@ -66,7 +66,7 @@ local function document_highlight(_client, bufnr)
     })
 end
 
-local function format_on_save(_client, bufnr)
+local function format_on_save(_, bufnr)
     vim.api.nvim_create_autocmd('BufWritePre', {
         group    = vim.api.nvim_create_augroup('LspFormatOnSave_' .. bufnr, { clear = true }),
         buffer   = bufnr,

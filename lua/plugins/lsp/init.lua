@@ -23,6 +23,13 @@ end
 local load = require('core.load')
 
 function M.setup()
+    load.ensure('blink.cmp')
+
+    -- Advertise extended blink.cmp capabilities to every LSP server.
+    vim.lsp.config('*', {
+        capabilities = require('blink.cmp').get_lsp_capabilities(),
+    })
+
     vim.diagnostic.config({
         signs            = true,
         underline        = true,

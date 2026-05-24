@@ -2,7 +2,6 @@ local M = {}
 
 function M.setup()
     require('mini.bufremove').setup()
-    require('mini.completion').setup({})
     require('mini.pairs').setup()
     require('mini.surround').setup({
         mappings = {

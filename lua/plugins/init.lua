@@ -25,13 +25,18 @@ vim.pack.add({
         version = vim.version.range('3')
     },
 
+    gh('rafamadriz/friendly-snippets'),
+    {
+        src = gh('saghen/blink.cmp'),
+        version = vim.version.range('1'),
+    },
 
     { src = gh('nvim-treesitter/nvim-treesitter') },
     { src = gh("nvim-treesitter/nvim-treesitter-textobjects") },
 
     { src = gh('nvim-mini/mini.comment'),                     version = 'stable' },
     { src = gh('nvim-mini/mini.bufremove'),                   version = 'stable' },
-    { src = gh('nvim-mini/mini.completion'),                  version = 'stable' },
+
     { src = gh('nvim-mini/mini.tabline'),                     version = 'stable' },
     { src = gh('nvim-mini/mini.statusline'),                  version = 'stable' },
     { src = gh('nvim-mini/mini.notify'),                      version = 'stable' },
@@ -56,6 +61,7 @@ end)
 
 -- Deferred: one per event-loop tick to keep startup responsive
 load.later('plugins.mini')
+load.later('plugins.blink')
 load.later('plugins.git')
 load.later('mason')
 load.later('hardtime')

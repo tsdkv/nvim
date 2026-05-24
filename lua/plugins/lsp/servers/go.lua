@@ -1,4 +1,3 @@
-
 local function iferr()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     local offset   = vim.fn.line2byte(row) + col
