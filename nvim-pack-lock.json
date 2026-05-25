@@ -118,6 +118,10 @@
       "rev": "7d324792b7943e4aa16ad007212e6acc6f9fe335",
       "src": "https://github.com/nvim-telescope/telescope.nvim"
     },
+    "todo-comments.nvim": {
+      "rev": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668",
+      "src": "https://github.com/folke/todo-comments.nvim"
+    },
     "vim": {
       "rev": "f13f5dfbb784deddbc1d8195f34dfd9ec73e2295",
       "src": "https://github.com/nordtheme/vim"

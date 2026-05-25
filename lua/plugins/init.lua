@@ -31,6 +31,7 @@ vim.pack.add({
     gh("kdheepak/lazygit.nvim"),
     gh("lewis6991/gitsigns.nvim"),
     gh("karb94/neoscroll.nvim"),
+    gh("folke/todo-comments.nvim"),
 
     gh("nvim-telescope/telescope.nvim"),
     gh("nvim-telescope/telescope-fzf-native.nvim"),
@@ -83,6 +84,7 @@ load.later("plugins.bookmarks")
 load.later("plugins.neoscroll")
 load.later("plugins.telescope")
 load.later("plugins.zen-mode")
+load.later("plugins.todo-comments")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
