@@ -1,6 +1,41 @@
 local M = {}
 
-function M.register()
+function M.setup()
+    local ts = require("telescope")
+    local actions = require("telescope.actions")
+
+    ts.setup({
+        defaults = {
+            path_display = { "truncate" },
+            sorting_strategy = "ascending",
+            layout_config = {
+                horizontal = {
+                    prompt_position = "top",
+                    preview_width = 0.55,
+                },
+                vertical = {
+                    prompt_position = "top",
+                    mirror = true, -- keeps prompt on top in vertical layout
+                },
+            },
+            mappings = {
+                i = {
+                    ["<C-f>"] = actions.to_fuzzy_refine,
+                },
+            },
+        },
+        extensions = {
+            fzf = {
+                fuzzy = true,
+                override_generic_sorter = true,
+                override_file_sorter = true,
+                case_mode = "smart_case",
+            },
+        },
+    })
+    ts.load_extension("bookmarks")
+    ts.load_extension("fzf")
+
     require("which-key").add({
         { "<leader>f<cr>", "<cmd>Telescope resume<cr>", desc = "Resume last search" },
         { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
@@ -19,30 +54,6 @@ function M.register()
         { "<leader>gs", "<cmd>Telescope git_status<cr>", desc = "Git status" },
         { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Git commits" },
     })
-end
-
-function M.setup()
-    local ts = require("telescope")
-    local actions = require("telescope.actions")
-
-    ts.setup({
-        defaults = {
-            path_display = { "truncate" },
-            sorting_strategy = "ascending",
-            layout_config = {
-                horizontal = {
-                    prompt_position = "top",
-                    preview_width = 0.55,
-                },
-            },
-            mappings = {
-                i = {
-                    ["<C-f>"] = actions.to_fuzzy_refine,
-                },
-            },
-        },
-    })
-    ts.load_extension("bookmarks")
 end
 
 return M

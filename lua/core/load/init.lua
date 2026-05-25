@@ -81,20 +81,6 @@ local function resolve(target)
     return function() end
 end
 
--- For lazy triggers (on_cmd, on_event, on_filetype): immediately require a
--- string target and call its .register() if it exists. This registers keymaps
--- and other declarations eagerly (e.g. into which-key) while deferring the
--- heavy .setup() call to the actual trigger.
-local function early_register(target)
-    if type(target) ~= "string" then
-        return
-    end
-    local ok, mod = pcall(require, target)
-    if ok and type(mod) == "table" and type(mod.register) == "function" then
-        wrap(mod.register, target .. ":register")
-    end
-end
-
 -- One-per-tick queue: each later() task runs on its own event-loop tick so
 -- the UI can redraw between tasks.
 H.queue, H.draining = {}, false
@@ -155,8 +141,6 @@ M.later = function(target)
 end
 
 M.on_event = function(events, target, pattern)
-    early_register(target)
-
     local target_key = get_target_key(target)
     local group = H.augroup("CoreLoadLoadOnEvent_" .. target_key)
 
@@ -185,8 +169,6 @@ end
 ---@param filetypes string|string[] The filetype pattern(s) to match (e.g., "go", "lua").
 ---@param target string|function The module name to require, or a function to call.
 M.on_filetype = function(filetypes, target)
-    early_register(target)
-
     local target_key = get_target_key(target)
     local group = H.augroup("CoreLoadFiletype_" .. target_key)
 
@@ -223,32 +205,6 @@ M.on_filetype = function(filetypes, target)
             return
         end
     end
-end
-
---- Registers a stub user command that lazy-loads a target on first invocation.
----
---- The stub removes itself, runs the target's setup, then re-executes the
---- original command with its arguments so the real handler fires transparently.
---- If setup fails, the replay is skipped to avoid running a missing command.
----
---- If the target module exports a `.register()` function, it is called
---- immediately (at declaration time) to allow eager keymap/which-key registration.
----
----@param name string The user command name to stub (e.g. 'Telescope').
----@param target string|function The module name to require, or a function to call.
-M.on_cmd = function(name, target)
-    early_register(target)
-
-    local fn = resolve(target)
-    vim.api.nvim_create_user_command(name, function(opts)
-        vim.api.nvim_del_user_command(name)
-        local ok, err = pcall(fn)
-        if not ok then
-            vim.notify("Config Error: " .. tostring(err), vim.log.levels.WARN)
-            return
-        end
-        vim.cmd(name .. (opts.args ~= "" and " " .. opts.args or ""))
-    end, { nargs = "*" })
 end
 
 --- Returns true if the target has already been executed by the loader.

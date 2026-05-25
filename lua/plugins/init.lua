@@ -1,6 +1,21 @@
 local gh = require("utils").github
 local load = require("core.load")
 
+-- Hook to automatically run make when telescope-fzf-native is installed/updated
+vim.api.nvim_create_autocmd("PackChanged", {
+    group = vim.api.nvim_create_augroup("PackChangedFZF", { clear = true }),
+    callback = function(ev)
+        if
+            ev.data.spec.name == "telescope-fzf-native.nvim"
+            and (ev.data.kind == "install" or ev.data.kind == "update")
+        then
+            vim.notify("Building telescope-fzf-native...", vim.log.levels.INFO)
+            vim.system({ "make" }, { cwd = ev.data.path }):wait()
+            vim.notify("Finished building telescope-fzf-native", vim.log.levels.INFO)
+        end
+    end,
+})
+
 vim.pack.add({
     gh("nordtheme/vim"),
 })
@@ -11,12 +26,14 @@ vim.pack.add({
     gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
     gh("folke/lazydev.nvim"),
     gh("nvim-lua/plenary.nvim"),
-    gh("nvim-telescope/telescope.nvim"),
     gh("folke/which-key.nvim"),
     gh("folke/zen-mode.nvim"),
     gh("kdheepak/lazygit.nvim"),
     gh("lewis6991/gitsigns.nvim"),
     gh("karb94/neoscroll.nvim"),
+
+    gh("nvim-telescope/telescope.nvim"),
+    gh("nvim-telescope/telescope-fzf-native.nvim"),
 
     gh("m4xshen/hardtime.nvim"),
 
@@ -64,6 +81,8 @@ load.later("mason")
 load.later("hardtime")
 load.later("plugins.bookmarks")
 load.later("plugins.neoscroll")
+load.later("plugins.telescope")
+load.later("plugins.zen-mode")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
@@ -72,10 +91,3 @@ load.on_filetype("lua", "lazydev")
 -- it auto-discovers server modules under plugins/lsp/servers/ and
 -- arranges its own FileType-driven lazy setup for each.
 load.on_event({ "BufReadPre", "BufNewFile" }, "plugins.lsp")
-
--- Command-driven: telescope lazy-loads on first :Telescope call.
--- M.register() is called immediately by on_cmd to populate which-key upfront.
-load.on_cmd("Telescope", "plugins.telescope")
-
--- Command-driven: zen-mode lazy-loads on first :ZenMode call.
-load.on_cmd("ZenMode", "plugins.zen-mode")

@@ -43,13 +43,12 @@ The `core.load` module (located in [lua/core/load/init.lua](file:///Users/tmac/.
 | `later` | `load.later(target)` | Defer loading to a one-per-tick queue starting after `VimEnter`. |
 | `on_event` | `load.on_event(events, target, pattern)` | Load a module when specific autocommand events fire (e.g., `BufReadPre`). |
 | `on_filetype` | `load.on_filetype(filetypes, target)` | Defer loading until a specific filetype buffer is opened. |
-| `on_cmd` | `load.on_cmd(name, target)` | Lazy-load on user command. Removes stub, runs setup, and replays command. |
 | `loaded` | `load.loaded(target)` | Returns true if the target has already been executed by the loader. |
 | `ensure` | `load.ensure(target)` | Executes target immediately if it has not already been loaded. Safe to call multiple times. |
 
 ### target resolution
 A `target` can be:
-- **A string**: Re-directed to safe-require the module and automatically invoke its `.setup()` function if it exists. For lazy triggers (`on_cmd`, `on_event`, `on_filetype`), if the module exports a `.register()` function, it is called *eagerly* to register keymaps/commands while deferring the heavy `.setup()` call.
+- **A string**: Re-directed to safe-require the module and automatically invoke its `.setup()` function if it exists.
 - **A function**: Executed directly.
 
 ---
