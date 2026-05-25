@@ -9,10 +9,10 @@ function M.setup()
 
     -- Map PageUp and PageDown to neoscroll smooth scroll
     vim.keymap.set({ "n", "v", "x" }, "<PageDown>", function()
-        neoscroll.scroll(1.0, { move_cursor = true, duration = 200 })
+        neoscroll.scroll(20, { move_cursor = true, duration = 200 })
     end, { desc = "Scroll Down (Page)" })
     vim.keymap.set({ "n", "v", "x" }, "<PageUp>", function()
-        neoscroll.scroll(-1.0, { move_cursor = true, duration = 200 })
+        neoscroll.scroll(-20, { move_cursor = true, duration = 200 })
     end, { desc = "Scroll Up (Page)" })
 end
 
