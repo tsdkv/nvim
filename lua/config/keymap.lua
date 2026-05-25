@@ -30,3 +30,7 @@ vim.keymap.set("n", "<leader>ud", function()
     local enabled = vim.diagnostic.is_enabled({ bufnr = 0 })
     vim.diagnostic.enable(not enabled, { bufnr = 0 })
 end, { desc = "Toggle Diagnostics" })
+
+-- UI2: view collapsed message logs
+vim.keymap.set("n", "<leader>um", "g<", { desc = "View Collapsed Messages" })
+

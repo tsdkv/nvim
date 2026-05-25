@@ -31,3 +31,20 @@ vim.opt.listchars = { tab = "  ", trail = "·", nbsp = "␣" }
 
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
+
+-- Enable and configure experimental ui2 (Neovim 0.12+)
+require("vim._core.ui2").enable({
+    enable = true,
+    msg = {
+        targets = {
+            default = "cmd",
+            progress = "msg",
+            info = "msg",
+            warning = "msg",
+        },
+        msg = {
+            height = 0.4,
+            timeout = 3000,
+        },
+    },
+})
