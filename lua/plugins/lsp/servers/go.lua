@@ -85,7 +85,6 @@ return {
                         unusedvariable = true, -- Warn about unused variables.
                         useany = true, -- Recommend replacing interface{} with any.
                         shadow = true, -- Warn when a variable shadows another variable in an outer scope.
-                        fieldalignment = true, -- Suggest struct field reorganization to minimize memory padding.
                     },
 
                     -- Inlay hints (inline virtual text showing types and parameter names in editor)
