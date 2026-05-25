@@ -107,7 +107,13 @@ function M.setup()
     end
 
     require("which-key").add({
-
+        {
+            "<leader>uN",
+            function()
+                MiniNotify.show_history()
+            end,
+            desc = "Show Notification History",
+        },
         {
             "<leader>x",
             function()
