@@ -3,6 +3,10 @@ local load = require("core.load")
 
 vim.pack.add({
     gh("nordtheme/vim"),
+})
+load.now("plugins.colorscheme")
+
+vim.pack.add({
     gh("mason-org/mason.nvim"),
     gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
     gh("folke/lazydev.nvim"),
@@ -47,17 +51,9 @@ vim.pack.add({
 
 -- Eager: must exist before any other plugin file registers keymaps or colors
 load.now("nvim-web-devicons")
-load.now("plugins.colorscheme")
 load.now("plugins.which-key")
 load.now("plugins.neo-tree")
 load.now("plugins.treesitter") -- treesitter doesn't support lazy loading
-
-load.later(function()
-    require("neoscroll").setup({
-        cursor_scrolls_alone = false, -- The cursor will keep on scrolling even if the window cannot scroll further
-        stop_eof = false,
-    })
-end)
 
 -- Deferred: one per event-loop tick to keep startup responsive
 load.later("plugins.mini")
@@ -67,6 +63,7 @@ load.later("plugins.git")
 load.later("mason")
 load.later("hardtime")
 load.later("plugins.bookmarks")
+load.later("plugins.neoscroll")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
