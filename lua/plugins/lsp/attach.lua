@@ -44,6 +44,20 @@ local function keymaps(bufnr)
             end,
             desc = "Next Diagnostic",
         },
+        {
+            "[e",
+            function()
+                vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR, float = true })
+            end,
+            desc = "Previous Error",
+        },
+        {
+            "]e",
+            function()
+                vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR, float = true })
+            end,
+            desc = "Next Error",
+        },
     }, { noremap = true, silent = true, buffer = bufnr })
 end
 
