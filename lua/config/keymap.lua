@@ -5,6 +5,11 @@ vim.keymap.set("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit Neovim" })
 vim.keymap.set("v", "<", "<gv", { desc = "Indent Left (Keep Selection)" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent Right (Keep Selection)" })
 
+vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
+vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
+vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
+vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+
 -- Buffer navigation (bracket motions — no plugin needed)
 vim.keymap.set("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 vim.keymap.set("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
@@ -33,4 +38,3 @@ end, { desc = "Toggle Diagnostics" })
 
 -- UI2: view collapsed message logs
 vim.keymap.set("n", "<leader>um", "g<", { desc = "View Collapsed Messages" })
-
