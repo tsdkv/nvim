@@ -56,7 +56,7 @@ vim.keymap.set({ "n", "t" }, "<leader>to", open_or_focus_terminal, { desc = "Ope
 vim.api.nvim_create_user_command("TerminalToggle", toggle_horizontal_terminal, { desc = "Toggle Horizontal Terminal" })
 vim.api.nvim_create_user_command("TerminalOpen", open_or_focus_terminal, { desc = "Open/Focus Terminal" })
 
-vim.keymap.set("t", "<Esc>", "<Cmd>wincmd p<CR>", { desc = "Move back from terminal" })
+vim.keymap.set("t", "<Esc><Esc>", "<Cmd>wincmd p<CR>", { desc = "Move back from terminal" })
 
 local term_group = vim.api.nvim_create_augroup("TerminalErgonomics", { clear = true })
 
