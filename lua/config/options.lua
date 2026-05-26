@@ -3,7 +3,12 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.wrap = true
 vim.opt.undofile = true
-vim.opt.clipboard = "unnamedplus"
+
+vim.schedule(function()
+    vim.o.clipboard = "unnamedplus"
+end)
+vim.o.list = true
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
