@@ -6,7 +6,7 @@ M.setup = function()
     arrow.setup({
         show_icons = true,
         leader_key = ";",
-        buffer_leader_key = "m",
+        buffer_leader_key = false,
 
         window = {
             width = "auto",
