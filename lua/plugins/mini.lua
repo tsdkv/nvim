@@ -76,15 +76,6 @@ function M.setup()
     })
     vim.notify = require("mini.notify").make_notify()
 
-    require("mini.tabline").setup({
-        show_icons = true,
-        tabpage_section = "left",
-        format = function(buf_id, label)
-            local prefix = vim.bo[buf_id].modified and "󰏫" or ""
-            return prefix .. MiniTabline.default_format(buf_id, label)
-        end,
-    })
-
     require("mini.comment").setup({
         options = {
             ignore_blank_line = true,

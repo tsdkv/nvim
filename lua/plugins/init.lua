@@ -33,6 +33,8 @@ vim.pack.add({
     gh("karb94/neoscroll.nvim"),
     gh("folke/todo-comments.nvim"),
 
+    gh("otavioschwanck/arrow.nvim"),
+
     gh("nvim-telescope/telescope.nvim"),
     gh("nvim-telescope/telescope-fzf-native.nvim"),
 
@@ -59,7 +61,6 @@ vim.pack.add({
 
     { src = gh("nvim-mini/mini.comment"), version = "stable" },
     { src = gh("nvim-mini/mini.bufremove"), version = "stable" },
-    { src = gh("nvim-mini/mini.tabline"), version = "stable" },
     { src = gh("nvim-mini/mini.statusline"), version = "stable" },
     { src = gh("nvim-mini/mini.notify"), version = "stable" },
     { src = gh("nvim-mini/mini.pairs"), version = "stable" },
@@ -85,6 +86,7 @@ load.later("plugins.neoscroll")
 load.later("plugins.telescope")
 load.later("plugins.zen-mode")
 load.later("plugins.todo-comments")
+load.later("plugins.arrow")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
