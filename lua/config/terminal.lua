@@ -56,7 +56,14 @@ vim.keymap.set({ "n", "t" }, "<leader>to", open_or_focus_terminal, { desc = "Ope
 vim.api.nvim_create_user_command("TerminalToggle", toggle_horizontal_terminal, { desc = "Toggle Horizontal Terminal" })
 vim.api.nvim_create_user_command("TerminalOpen", open_or_focus_terminal, { desc = "Open/Focus Terminal" })
 
-vim.keymap.set("t", "<Esc><Esc>", "<Cmd>wincmd p<CR>", { desc = "Move back from terminal" })
+-- Exit terminal mode to normal mode to allow scrollback/motions
+vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+-- Direct window focus switching from terminal mode
+vim.keymap.set("t", "<C-h>", "<Cmd>wincmd h<CR>", { desc = "Move focus left" })
+vim.keymap.set("t", "<C-j>", "<Cmd>wincmd j<CR>", { desc = "Move focus down" })
+vim.keymap.set("t", "<C-k>", "<Cmd>wincmd k<CR>", { desc = "Move focus up" })
+vim.keymap.set("t", "<C-l>", "<Cmd>wincmd l<CR>", { desc = "Move focus right" })
 
 local term_group = vim.api.nvim_create_augroup("TerminalErgonomics", { clear = true })
 
@@ -80,5 +87,19 @@ vim.api.nvim_create_autocmd("TermClose", {
                 term_state.win = nil
             end
         end
+    end,
+})
+
+-- Disable terminal escapes and window focus switching inside lazygit
+vim.api.nvim_create_autocmd("FileType", {
+    group = term_group,
+    pattern = "lazygit",
+    callback = function(args)
+        vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = args.buf, nowait = true })
+        vim.keymap.set("t", "<Esc><Esc>", "<Esc><Esc>", { buffer = args.buf, nowait = true })
+        vim.keymap.set("t", "<C-h>", "<C-h>", { buffer = args.buf })
+        vim.keymap.set("t", "<C-j>", "<C-j>", { buffer = args.buf })
+        vim.keymap.set("t", "<C-k>", "<C-k>", { buffer = args.buf })
+        vim.keymap.set("t", "<C-l>", "<C-l>", { buffer = args.buf })
     end,
 })
