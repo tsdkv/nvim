@@ -16,12 +16,6 @@ function M.setup()
             suffix_next = "n", -- Suffix to search with "next" method
         },
     })
-    require("mini.jump2d").setup({
-        allowed_windows = {
-            current = true,
-            not_current = false,
-        },
-    })
 
     -- TODO: remove this plugin
     local statusline = require("mini.statusline")

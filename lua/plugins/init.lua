@@ -32,6 +32,7 @@ vim.pack.add({
     gh("lewis6991/gitsigns.nvim"),
     gh("karb94/neoscroll.nvim"),
     gh("folke/todo-comments.nvim"),
+    gh("folke/flash.nvim"),
 
     gh("otavioschwanck/arrow.nvim"),
 
@@ -65,7 +66,6 @@ vim.pack.add({
     { src = gh("nvim-mini/mini.notify"), version = "stable" },
     { src = gh("nvim-mini/mini.pairs"), version = "stable" },
     { src = gh("nvim-mini/mini.surround"), version = "stable" },
-    { src = gh("nvim-mini/mini.jump2d"), version = "stable" },
 })
 
 -- Eager: must exist before any other plugin file registers keymaps or colors
@@ -87,6 +87,7 @@ load.later("plugins.telescope")
 load.later("plugins.zen-mode")
 load.later("plugins.todo-comments")
 load.later("plugins.arrow")
+load.later("plugins.flash")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
