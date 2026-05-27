@@ -13,7 +13,7 @@ M.setup = function()
     })
 
     require("which-key").add({
-        { "gs", flash.jump, mode = { "n", "x", "o" }, desc = "Flash Jump" },
+        { "<CR>", flash.jump, mode = { "n", "x", "o" }, desc = "Flash Jump" },
         { "gS", flash.treesitter, mode = { "n", "x", "o" }, desc = "Flash Treesitter" },
         { "r", flash.remote, mode = "o", desc = "Remote Flash" },
         { "R", flash.treesitter_search, mode = { "o", "x" }, desc = "Treesitter Search" },
