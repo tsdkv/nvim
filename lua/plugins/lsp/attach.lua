@@ -27,6 +27,14 @@ local function keymaps(bufnr)
         { "<leader>la", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
         { "<leader>lr", vim.lsp.buf.rename, desc = "Rename Symbol" },
         { "<leader>ls", vim.lsp.buf.document_symbol, desc = "Document Symbols" },
+        {
+            "<leader>ld",
+            function()
+                local enabled = vim.diagnostic.is_enabled({ bufnr = bufnr })
+                vim.diagnostic.enable(not enabled, { bufnr = bufnr })
+            end,
+            desc = "Toggle Diagnostics",
+        },
 
         { "<leader>dd", vim.diagnostic.open_float, desc = "Line Diagnostics" },
         { "<leader>dq", vim.diagnostic.setloclist, desc = "Diagnostics List" },

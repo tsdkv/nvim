@@ -15,10 +15,6 @@ vim.keymap.set("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 vim.keymap.set("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
 
 -- UI toggles (<leader>u — group label in plugins/which-key.lua)
-vim.keymap.set("n", "<leader>ui", function()
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end, { desc = "Toggle Inlay Hints" })
-
 vim.keymap.set("n", "<leader>un", function()
     vim.opt.relativenumber = not vim.opt.relativenumber:get()
 end, { desc = "Toggle Relative Numbers" })
@@ -31,10 +27,6 @@ vim.keymap.set("n", "<leader>us", function()
     vim.opt.spell = not vim.opt.spell:get()
 end, { desc = "Toggle Spell Check" })
 
-vim.keymap.set("n", "<leader>ud", function()
-    local enabled = vim.diagnostic.is_enabled({ bufnr = 0 })
-    vim.diagnostic.enable(not enabled, { bufnr = 0 })
-end, { desc = "Toggle Diagnostics" })
 
 -- UI2: view collapsed message logs
 vim.keymap.set("n", "<leader>um", "g<", { desc = "View Collapsed Messages" })
