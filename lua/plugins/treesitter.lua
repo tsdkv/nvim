@@ -21,7 +21,7 @@ local function setup_treesitter_objects()
     local swap = require("nvim-treesitter-textobjects.swap")
     local repeat_move = require("nvim-treesitter-textobjects.repeatable_move")
     local wk = require("which-key")
-    local tselect = require("nvim-treesitter-textobjects")
+    local tselect = require("nvim-treesitter-textobjects.select")
 
     -- Wrap move functions to make them repeatable
     local goto_next_start = repeat_move.make_repeatable_move(move.goto_next_start)
