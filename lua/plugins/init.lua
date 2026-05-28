@@ -67,7 +67,6 @@ vim.pack.add({
     { src = gh("nvim-mini/mini.statusline"), version = "stable" },
     { src = gh("nvim-mini/mini.notify"), version = "stable" },
     { src = gh("nvim-mini/mini.pairs"), version = "stable" },
-    { src = gh("nvim-mini/mini.surround"), version = "stable" },
 })
 
 -- Eager: must exist before any other plugin file registers keymaps or colors
