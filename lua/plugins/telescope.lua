@@ -6,6 +6,8 @@ function M.setup()
 
     ts.setup({
         defaults = {
+            prompt_prefix = "   ",
+            selection_caret = "  ",
             path_display = { "truncate" },
             sorting_strategy = "ascending",
             layout_config = {
@@ -31,10 +33,21 @@ function M.setup()
                 override_file_sorter = true,
                 case_mode = "smart_case",
             },
+            ["ui-select"] = {
+                require("telescope.themes").get_dropdown({
+                    winblend = 10,
+                    borderchars = {
+                        prompt = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
+                        results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+                        preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+                    },
+                })
+            },
         },
     })
     ts.load_extension("bookmarks")
     ts.load_extension("fzf")
+    ts.load_extension("ui-select")
 
     local function cool_buffers()
         local opts = {

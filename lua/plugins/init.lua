@@ -33,11 +33,13 @@ vim.pack.add({
     gh("karb94/neoscroll.nvim"),
     gh("folke/todo-comments.nvim"),
     gh("folke/flash.nvim"),
+    gh("akinsho/toggleterm.nvim"),
 
     gh("otavioschwanck/arrow.nvim"),
 
     gh("nvim-telescope/telescope.nvim"),
     gh("nvim-telescope/telescope-fzf-native.nvim"),
+    gh("nvim-telescope/telescope-ui-select.nvim"),
 
     gh("m4xshen/hardtime.nvim"),
 
@@ -88,6 +90,7 @@ load.later("plugins.zen-mode")
 load.later("plugins.todo-comments")
 load.later("plugins.arrow")
 load.later("plugins.flash")
+load.later("plugins.toggleterm")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")

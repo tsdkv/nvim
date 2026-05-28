@@ -12,11 +12,14 @@ vim.api.nvim_create_user_command("PackClean", function()
         return
     end
 
-    local choice = vim.fn.confirm("Remove unused plugins?", "&Yes\n&No", 2)
-    if choice == 1 then
-        vim.pack.del(unused)
-        print("Unused plugins removed.")
-    end
+    vim.ui.select({ "Yes", "No" }, {
+        prompt = "Remove unused plugins?",
+    }, function(choice)
+        if choice == "Yes" then
+            vim.pack.del(unused)
+            print("Unused plugins removed.")
+        end
+    end)
 end, { desc = "Find and remove unused plugins" })
 
 vim.api.nvim_create_user_command("PackUpdate", function(opts)
