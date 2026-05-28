@@ -35,6 +35,8 @@ vim.pack.add({
     gh("folke/flash.nvim"),
     gh("akinsho/toggleterm.nvim"),
 
+    gh("nvim-lualine/lualine.nvim"),
+
     gh("otavioschwanck/arrow.nvim"),
 
     gh("nvim-telescope/telescope.nvim"),
@@ -64,7 +66,6 @@ vim.pack.add({
 
     { src = gh("nvim-mini/mini.comment"), version = "stable" },
     { src = gh("nvim-mini/mini.bufremove"), version = "stable" },
-    { src = gh("nvim-mini/mini.statusline"), version = "stable" },
     { src = gh("nvim-mini/mini.notify"), version = "stable" },
     { src = gh("nvim-mini/mini.pairs"), version = "stable" },
 })
@@ -90,6 +91,7 @@ load.later("plugins.todo-comments")
 load.later("plugins.arrow")
 load.later("plugins.flash")
 load.later("plugins.toggleterm")
+load.later("plugins.lualine")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
