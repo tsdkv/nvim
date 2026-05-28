@@ -1,5 +1,6 @@
 local M = {}
 
+-- ""
 M.setup = function()
     require("bookmarks").setup({
         keywords = {
@@ -7,6 +8,10 @@ M.setup = function()
             ["@w"] = "󰀪 ",
             ["@f"] = " ",
             ["@n"] = "󰎚 ",
+        },
+
+        signs = {
+            add = { text = "" },
         },
 
         on_attach = function(bufnr)
