@@ -11,6 +11,7 @@ return {
                 Lua = {
                     -- lazydev.nvim handles workspace library (Neovim API stubs)
                     completion = { callSnippet = "Replace" },
+                    format = { enable = false }, -- Disable formatting (formatting is done by stylua via conform)
                 },
             },
         })
