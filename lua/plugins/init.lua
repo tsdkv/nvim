@@ -81,6 +81,7 @@ load.now("plugins.neo-tree")
 load.now("plugins.treesitter") -- treesitter doesn't support lazy loading
 
 -- Deferred: one per event-loop tick to keep startup responsive
+load.later("plugins.persistence")
 load.later("plugins.mini")
 load.later("plugins.blink")
 load.later("plugins.conform")
@@ -96,9 +97,6 @@ load.later("plugins.arrow")
 load.later("plugins.flash")
 load.later("plugins.toggleterm")
 load.later("plugins.lualine")
-
--- Event-driven
-load.on_event("BufReadPre", "plugins.persistence")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
