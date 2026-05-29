@@ -6,4 +6,4 @@ end
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-require("plugins")
+require("core.load").now("plugins")
