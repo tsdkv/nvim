@@ -3,3 +3,8 @@ INIT_LUA = init.lua
 
 test:
 	nvim --headless -c "PlenaryBustedDirectory $(TESTS_DIR)"
+
+format:
+	stylua .
+
+.PHONY: test format

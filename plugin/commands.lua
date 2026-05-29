@@ -46,17 +46,14 @@ local function show_loader_trace()
     local trace = require("core.load").get_trace()
     local lines = {}
     for _, entry in ipairs(trace) do
-        local status_str = entry.status == "success" and "✓"
-            or entry.status == "failed" and "✗"
-            or "○"
+        local status_str = entry.status == "success" and "✓" or entry.status == "failed" and "✗" or "○"
         local duration = entry.duration_ms and string.format(" (%.2fms)", entry.duration_ms) or ""
         table.insert(lines, string.format("[%s] %-8s | %s%s", status_str, entry.phase, entry.target, duration))
         if entry.err then
             table.insert(lines, "  └─ Error: " .. entry.err)
         end
     end
-    vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "Loader Trace" })
+    vim.notify("Load Trace:\n" .. table.concat(lines, "\n"), vim.log.levels.INFO, { title = "Loader Trace" })
 end
 
 vim.api.nvim_create_user_command("LoadTrace", show_loader_trace, { desc = "Show configuration loader trace log" })
-

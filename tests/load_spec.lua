@@ -1,10 +1,9 @@
 local load_lib = function()
-    package.loaded['core.load'] = nil
-    return require('core.load')
+    package.loaded["core.load"] = nil
+    return require("core.load")
 end
 
 describe("Configuration Loader Framework", function()
-
     it("should execute M.now immediately", function()
         local load = load_lib()
         local executed = false
@@ -20,8 +19,12 @@ describe("Configuration Loader Framework", function()
         local load = load_lib()
         local order = {}
 
-        load.later(function() table.insert(order, 1) end)
-        load.later(function() table.insert(order, 2) end)
+        load.later(function()
+            table.insert(order, 1)
+        end)
+        load.later(function()
+            table.insert(order, 2)
+        end)
 
         assert.are.same({}, order, "The queue should not execute before VimEnter")
 
@@ -51,8 +54,12 @@ describe("Configuration Loader Framework", function()
 
         -- Since "vim_did_enter == 1", it should immediately call drain(),
         -- which in turn queues the tasks into the vim.schedule event loop.
-        load.later(function() table.insert(order, 1) end)
-        load.later(function() table.insert(order, 2) end)
+        load.later(function()
+            table.insert(order, 1)
+        end)
+        load.later(function()
+            table.insert(order, 2)
+        end)
 
         assert.are.same({}, order, "Tasks should be deferred via vim.schedule, not executed synchronously")
 
@@ -81,7 +88,7 @@ describe("Configuration Loader Framework", function()
 
         local autocmds = vim.api.nvim_get_autocmds({
             group = "CoreLoadLaterStart",
-            event = "VimEnter"
+            event = "VimEnter",
         })
 
         assert.are.equal(1, #autocmds, "There should be exactly one VimEnter autocmd registered")
@@ -102,7 +109,7 @@ describe("Configuration Loader Framework", function()
         -- nvim_get_autocmds will throw an error if called directly. We use pcall to catch it.
         local group_exists = pcall(vim.api.nvim_get_autocmds, {
             group = "CoreLoadLaterStart",
-            event = "VimEnter"
+            event = "VimEnter",
         })
 
         assert.is_false(group_exists, "The group was completely deleted, which is a successful cleanup")
@@ -124,5 +131,4 @@ describe("Configuration Loader Framework", function()
 
         assert.are.equal(1, execution_count)
     end)
-end
-)
+end)
