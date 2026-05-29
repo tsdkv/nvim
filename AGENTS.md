@@ -13,13 +13,16 @@ This configuration is designed to be **highly modular, responsive, and fast-star
 .
 ├── init.lua              # Editor entry point
 ├── Makefile              # Helper tasks (e.g., test suite execution)
+├── plugin/               # Global Neovim options, mappings, commands, autocmds
+│   ├── options.lua
+│   ├── keymap.lua
+│   ├── autocmds.lua
+│   └── commands.lua
+├── ftplugin/             # Filetype-specific settings
+│   ├── json.lua
+│   └── ...
 ├── lua/
 │   ├── core/load/        # Core scheduling & lazy-loading framework
-│   ├── config/           # General Neovim options, mappings, commands, autocmds
-│   │   ├── options.lua
-│   │   ├── keymap.lua
-│   │   ├── autocmds.lua
-│   │   └── commands.lua
 │   └── plugins/          # Plugin definitions (each file returns a setup module)
 │       ├── init.lua      # Plugin registry (vim.pack.add and lazy bindings)
 │       ├── neo-tree.lua
