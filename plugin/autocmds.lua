@@ -42,12 +42,3 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- 2-space indent for data/config file types (overrides global 4-space default)
-vim.api.nvim_create_autocmd("FileType", {
-    group = vim.api.nvim_create_augroup("FileTypeIndent", { clear = true }),
-    pattern = { "json", "jsonc", "yaml", "toml", "html", "css" },
-    callback = function()
-        vim.opt_local.tabstop = 2
-        vim.opt_local.shiftwidth = 2
-    end,
-})

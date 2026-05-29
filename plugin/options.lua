@@ -10,8 +10,7 @@ end)
 vim.o.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+
 
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
@@ -31,8 +30,6 @@ vim.opt.confirm = true
 vim.opt.inccommand = "split" -- live preview of :s substitutions in a split
 vim.opt.smoothscroll = true -- smooth Ctrl-D/U scrolling (nvim 0.10+)
 vim.opt.mouse = "a" -- mouse in all modes
-vim.opt.list = true
-vim.opt.listchars = { tab = "  ", trail = "·", nbsp = "␣" }
 
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99

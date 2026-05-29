@@ -3,15 +3,6 @@ if vim.fn.has("nvim-0.12") == 0 then
     return
 end
 
-_G.P = function(...)
-    for _, v in ipairs({ ... }) do
-        print(vim.inspect(v))
-    end
-    return ...
-end
-
-require("config.options")
-require("config.keymap")
-require("config.autocmds")
-require("config.commands")
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 require("plugins")
