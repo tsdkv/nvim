@@ -12,6 +12,7 @@ function M.setup()
         { "<leader>d", group = "Diagnostics" },
         { "<leader>u", group = "UI" },
         { "<leader>t", group = "Terminal" },
+        { "<leader>q", group = "Quit / Session" },
     })
 end
 

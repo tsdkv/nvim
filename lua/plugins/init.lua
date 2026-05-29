@@ -22,17 +22,22 @@ vim.pack.add({
 load.now("plugins.colorscheme")
 
 vim.pack.add({
-    gh("mason-org/mason.nvim"),
-    gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
-    gh("folke/lazydev.nvim"),
+    gh("nvim-tree/nvim-web-devicons"),
     gh("nvim-lua/plenary.nvim"),
+
+    gh("folke/lazydev.nvim"),
     gh("folke/which-key.nvim"),
     gh("folke/zen-mode.nvim"),
+    gh("folke/todo-comments.nvim"),
+    gh("folke/flash.nvim"),
+    gh("folke/persistence.nvim"),
+
+    gh("mason-org/mason.nvim"),
+    gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
+
     gh("kdheepak/lazygit.nvim"),
     gh("lewis6991/gitsigns.nvim"),
     gh("karb94/neoscroll.nvim"),
-    gh("folke/todo-comments.nvim"),
-    gh("folke/flash.nvim"),
     gh("akinsho/toggleterm.nvim"),
 
     gh("nvim-lualine/lualine.nvim"),
@@ -48,7 +53,6 @@ vim.pack.add({
     gh("tomasky/bookmarks.nvim"),
 
     gh("MunifTanjim/nui.nvim"),
-    gh("nvim-tree/nvim-web-devicons"),
     {
         src = gh("nvim-neo-tree/neo-tree.nvim"),
         version = vim.version.range("3"),
@@ -92,6 +96,9 @@ load.later("plugins.arrow")
 load.later("plugins.flash")
 load.later("plugins.toggleterm")
 load.later("plugins.lualine")
+
+-- Event-driven
+load.on_event("BufReadPre", "plugins.persistence")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
