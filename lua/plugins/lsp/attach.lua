@@ -4,9 +4,9 @@ local M = {}
 
 local function keymaps(bufnr)
     load.keymap({
-        { "gd", vim.lsp.buf.definition, desc = "Go to Definition" },
+        { "gd", require("telescope.builtin").lsp_definitions, desc = "Go to Definition" },
         { "gD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
-        { "gi", vim.lsp.buf.implementation, desc = "Go to Implementation" },
+        { "gi", require("telescope.builtin").lsp_implementations, desc = "Go to Implementation" },
         {
             "gr",
             function()
@@ -14,7 +14,7 @@ local function keymaps(bufnr)
             end,
             desc = "Go to References",
         },
-        { "gt", vim.lsp.buf.type_definition, desc = "Go to Type Definition" },
+        { "gt", require("telescope.builtin").lsp_type_definitions, desc = "Go to Type Definition" },
 
         {
             "<leader>lh",
@@ -32,7 +32,7 @@ local function keymaps(bufnr)
         },
         { "<leader>la", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
         { "<leader>lr", vim.lsp.buf.rename, desc = "Rename Symbol" },
-        { "<leader>ls", vim.lsp.buf.document_symbol, desc = "Document Symbols" },
+        { "<leader>ls", require("telescope.builtin").lsp_document_symbols, desc = "Document Symbols" },
         {
             "<leader>ld",
             function()
