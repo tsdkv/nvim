@@ -13,6 +13,7 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 -- Buffer navigation
 vim.keymap.set("n", "]b", "<cmd>bnext<cr>", { desc = "Next Buffer" })
 vim.keymap.set("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
+vim.keymap.set("n", "<leader>x", "<cmd>bd<cr>", { desc = "Delete Buffer" })
 
 -- UI toggles (<leader>u — group label in plugins/which-key.lua)
 vim.keymap.set("n", "<leader>un", function()
