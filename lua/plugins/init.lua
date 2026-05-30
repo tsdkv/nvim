@@ -68,7 +68,6 @@ vim.pack.add({
     { src = gh("nvim-treesitter/nvim-treesitter") },
     { src = gh("nvim-treesitter/nvim-treesitter-textobjects") },
 
-    { src = gh("nvim-mini/mini.comment"), version = "stable" },
     { src = gh("nvim-mini/mini.bufremove"), version = "stable" },
     { src = gh("nvim-mini/mini.notify"), version = "stable" },
     { src = gh("nvim-mini/mini.pairs"), version = "stable" },

@@ -116,6 +116,7 @@ local function setup_treesitter_objects()
         { "al", "@loop.outer", "Around loop" },
         { "a=", "@assignment.outer", "Around assignment" },
         { "aC", "@call.outer", "Around function call" },
+        { "a/", "@comment.outer", "Around comment" },
         -- Inside
         { "if", "@function.inner", "Inside function" },
         { "ic", "@class.inner", "Inside class" },
@@ -126,6 +127,7 @@ local function setup_treesitter_objects()
         { "l=", "@assignment.lhs", "LHS of assignment" },
         { "r=", "@assignment.rhs", "RHS of assignment" },
         { "iC", "@call.inner", "Inside function call" },
+        { "i/", "@comment.inner", "Inside comment" },
     }
 
     local select_wk = {

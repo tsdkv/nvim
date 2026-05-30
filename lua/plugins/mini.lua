@@ -16,17 +16,6 @@ function M.setup()
     })
     vim.notify = require("mini.notify").make_notify()
 
-    require("mini.comment").setup({
-        options = {
-            ignore_blank_line = true,
-        },
-        mappings = {
-            comment_line = "<leader>/",
-            comment_visual = "<leader>/",
-            textobject = "<leader>/",
-        },
-    })
-
     -- Close buffers relative to current by buffer number (matches tabline order)
     local function close_bufs(predicate)
         local cur = vim.api.nvim_get_current_buf()
