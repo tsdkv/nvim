@@ -1,5 +1,16 @@
 local M = {}
 
+M.keymap = {
+    { "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Toggle Horizontal Terminal" },
+    { "<leader>to", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggle Floating Terminal" },
+    { "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", desc = "Toggle Vertical Terminal" },
+    { "<Esc><Esc>", "<C-\\><C-n>", desc = "Exit terminal mode", mode = "t" },
+    { "<C-h>", "<Cmd>wincmd h<CR>", desc = "Move focus left", mode = "t" },
+    { "<C-j>", "<Cmd>wincmd j<CR>", desc = "Move focus down", mode = "t" },
+    { "<C-k>", "<Cmd>wincmd k<CR>", desc = "Move focus up", mode = "t" },
+    { "<C-l>", "<Cmd>wincmd l<CR>", desc = "Move focus right", mode = "t" },
+}
+
 M.setup = function()
     require("toggleterm").setup({
         size = function(term)
@@ -26,22 +37,6 @@ M.setup = function()
             winblend = 10,
         },
     })
-
-    -- Map shortcuts in normal mode only, preventing the lazygit typing issue
-    require("which-key").add({
-        { "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Toggle Horizontal Terminal" },
-        { "<leader>to", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggle Floating Terminal" },
-        { "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", desc = "Toggle Vertical Terminal" },
-    })
-
-    -- Exit terminal mode to normal mode to allow scrollback/motions
-    vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-
-    -- Direct window focus switching from terminal mode
-    vim.keymap.set("t", "<C-h>", "<Cmd>wincmd h<CR>", { desc = "Move focus left" })
-    vim.keymap.set("t", "<C-j>", "<Cmd>wincmd j<CR>", { desc = "Move focus down" })
-    vim.keymap.set("t", "<C-k>", "<Cmd>wincmd k<CR>", { desc = "Move focus up" })
-    vim.keymap.set("t", "<C-l>", "<Cmd>wincmd l<CR>", { desc = "Move focus right" })
 end
 
 return M

@@ -10,9 +10,15 @@ function M.setup()
     pcall(vim.keymap.del, "n", "grt")
     pcall(vim.keymap.del, "n", "grx")
 
-    require("which-key").setup({})
+    require("which-key").setup({
+        triggers = {
+            { "<auto>", mode = "nxso" },
+            { "m", mode = { "n", "v" } },
+        },
+    })
 
-    -- Leader-group prefixes only. Individual maps are registered by each plugin file.
+    -- Group labels only. Individual maps are registered by each plugin file natively,
+    -- but which-key can still pick up their descriptions.
     require("which-key").add({
         { "<leader>g", group = "Git" },
         { "<leader>f", group = "Find" },
@@ -21,6 +27,7 @@ function M.setup()
         { "<leader>u", group = "UI" },
         { "<leader>t", group = "Terminal" },
         { "<leader>q", group = "Quit / Session" },
+        { "m", group = "Bookmarks" },
     })
 end
 

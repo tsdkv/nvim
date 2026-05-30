@@ -1,5 +1,24 @@
 local M = {}
 
+M.keymap = {
+    { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    { "<leader>gb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle current line blame" },
+    {
+        "<leader>gn",
+        function()
+            require("gitsigns").nav_hunk("next")
+        end,
+        desc = "Next hunk",
+    },
+    {
+        "<leader>gp",
+        function()
+            require("gitsigns").nav_hunk("prev")
+        end,
+        desc = "Prev hunk",
+    },
+}
+
 M.setup = function()
     require("lazygit")
 
@@ -55,25 +74,6 @@ M.setup = function()
         },
     })
     gitsigns.toggle_signs(true)
-
-    require("which-key").add({
-        { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-        { "<leader>gb", gitsigns.toggle_current_line_blame, desc = "Toggle current line blame" },
-        {
-            "<leader>gn",
-            function()
-                gitsigns.nav_hunk("next")
-            end,
-            desc = "Next hunk",
-        },
-        {
-            "<leader>gp",
-            function()
-                gitsigns.nav_hunk("prev")
-            end,
-            desc = "Prev hunk",
-        },
-    })
 end
 
 return M

@@ -1,9 +1,9 @@
-local wk = require("which-key")
+local load = require("core.load")
 
 local M = {}
 
 local function keymaps(bufnr)
-    wk.add({
+    load.keymap({
         { "gd", vim.lsp.buf.definition, desc = "Go to Definition" },
         { "gD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
         { "gi", vim.lsp.buf.implementation, desc = "Go to Implementation" },
@@ -72,17 +72,19 @@ local function keymaps(bufnr)
             end,
             desc = "Next Error",
         },
-    }, { noremap = true, silent = true, buffer = bufnr })
+    }, { buffer = bufnr })
 end
 
 local function inlay_hints(bufnr)
-    wk.add({
-        "<leader>li",
-        function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-        end,
-        desc = "Toggle Inlay Hints",
-    }, { noremap = true, silent = true, buffer = bufnr })
+    load.keymap({
+        {
+            "<leader>li",
+            function()
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+            end,
+            desc = "Toggle Inlay Hints",
+        },
+    }, { buffer = bufnr })
 end
 
 local function document_highlight(_, bufnr)

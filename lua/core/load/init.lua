@@ -66,6 +66,30 @@ local function record_load_end(target, status, err)
     end
 end
 
+--- Process a keymap spec table. Calls vim.keymap.set() for each entry.
+---
+--- Format (same as which-key wk.add() spec):
+---   { [1]=lhs, [2]=rhs, desc=string, mode?=string|table, buffer?=number, expr?=bool }
+--- Group-only entries (no [2]) are skipped.
+---
+---@param specs table[]
+---@param opts? table  Shared options merged into each entry (e.g. { buffer = bufnr })
+local function keymap(specs, opts)
+    opts = opts or {}
+    for _, k in ipairs(specs) do
+        if k[2] ~= nil then
+            local mode = k.mode or "n"
+            vim.keymap.set(mode, k[1], k[2], {
+                desc = k.desc,
+                buffer = k.buffer or opts.buffer,
+                silent = k.silent ~= false,
+                noremap = k.noremap ~= false,
+                expr = k.expr,
+            })
+        end
+    end
+end
+
 -- Resolves a target (string module name or function) into a callable.
 -- String: require the module, then call .setup() if it exists.
 --         Wrapped in H.done guard to ensure setup() runs at most once.
@@ -80,8 +104,15 @@ local function resolve(target)
     elseif type(target) == "string" then
         run_load = function()
             local mod = require(target)
-            if type(mod) == "table" and type(mod.setup) == "function" then
+            if type(mod) ~= "table" then
+                return
+            end
+
+            if type(mod.setup) == "function" then
                 mod.setup()
+            end
+            if type(mod.keymap) == "table" then
+                keymap(mod.keymap)
             end
         end
     else
@@ -273,5 +304,8 @@ end
 M.get_trace = function()
     return H.trace
 end
+
+--- Exposed for buffer-local keymaps (LSP on_attach, etc.)
+M.keymap = keymap
 
 return M

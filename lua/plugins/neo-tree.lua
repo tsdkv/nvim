@@ -1,5 +1,9 @@
 local M = {}
 
+M.keymap = {
+    { "<leader>e", "<Cmd>Neotree<CR>", desc = "Toggle explorer" },
+}
+
 M.setup = function()
     local git_available = vim.fn.executable("git") == 1
 
@@ -120,10 +124,6 @@ M.setup = function()
                 end,
             },
         },
-    })
-
-    require("which-key").add({
-        { "<leader>e", "<Cmd>Neotree<CR>", desc = "Toggle explorer" },
     })
 end
 

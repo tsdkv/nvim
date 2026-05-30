@@ -1,5 +1,15 @@
 local M = {}
 
+M.keymap = {
+    {
+        "<leader>uN",
+        function()
+            MiniNotify.show_history()
+        end,
+        desc = "Show Notification History",
+    },
+}
+
 function M.setup()
     require("mini.pairs").setup()
 
@@ -14,16 +24,6 @@ function M.setup()
         },
     })
     vim.notify = require("mini.notify").make_notify()
-
-    require("which-key").add({
-        {
-            "<leader>uN",
-            function()
-                MiniNotify.show_history()
-            end,
-            desc = "Show Notification History",
-        },
-    })
 end
 
 return M

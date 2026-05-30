@@ -1,5 +1,15 @@
 local M = {}
 
+M.keymap = {
+    { "mm", function() require("bookmarks").bookmark_toggle() end, desc = "Toggle Bookmark" },
+    { "mi", function() require("bookmarks").bookmark_ann() end, desc = "Add/Edit Annotation" },
+    { "mc", function() require("bookmarks").bookmark_clean() end, desc = "Clean Buffer Bookmarks" },
+    { "mn", function() require("bookmarks").bookmark_next() end, desc = "Next Bookmark" },
+    { "mp", function() require("bookmarks").bookmark_prev() end, desc = "Prev Bookmark" },
+    { "ml", function() require("bookmarks").bookmark_list() end, desc = "List Bookmarks (Quickfix)" },
+    { "mx", function() require("bookmarks").bookmark_clear_all() end, desc = "Clear All Bookmarks (Project)" },
+}
+
 M.setup = function()
     require("bookmarks").setup({
         save_file = vim.fn.stdpath("data") .. "/bookmarks",
@@ -9,25 +19,9 @@ M.setup = function()
             ["@f"] = " ",
             ["@n"] = "󰎚 ",
         },
-
         signs = {
             add = { text = "" },
         },
-
-        on_attach = function(bufnr)
-            local bm = require("bookmarks")
-            local wk = require("which-key")
-            wk.add({
-                { "m", group = "Bookmarks" },
-                { "mm", bm.bookmark_toggle, desc = "Toggle Bookmark" },
-                { "mi", bm.bookmark_ann, desc = "Add/Edit Annotation" },
-                { "mc", bm.bookmark_clean, desc = "Clean Buffer Bookmarks" },
-                { "mn", bm.bookmark_next, desc = "Next Bookmark" },
-                { "mp", bm.bookmark_prev, desc = "Prev Bookmark" },
-                { "ml", bm.bookmark_list, desc = "List Bookmarks (Quickfix)" },
-                { "mx", bm.bookmark_clear_all, desc = "Clear All Bookmarks (Project)" },
-            }, { buffer = bufnr })
-        end,
     })
 end
 

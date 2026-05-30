@@ -20,7 +20,7 @@ local function setup_treesitter_objects()
     local move = require("nvim-treesitter-textobjects.move")
     local swap = require("nvim-treesitter-textobjects.swap")
     local repeat_move = require("nvim-treesitter-textobjects.repeatable_move")
-    local wk = require("which-key")
+    local load = require("core.load")
     local tselect = require("nvim-treesitter-textobjects.select")
 
     -- Wrap move functions to make them repeatable
@@ -149,8 +149,8 @@ local function setup_treesitter_objects()
         })
     end
 
-    wk.add(wk_specs)
-    wk.add(select_wk)
+    load.keymap(wk_specs)
+    load.keymap(select_wk)
 
     -- Configure repeatable moves for ; and ,
     vim.keymap.set({ "n", "x", "o" }, ";", repeat_move.repeat_last_move_next, { desc = "Repeat last move forward" })

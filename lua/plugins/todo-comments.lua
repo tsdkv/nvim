@@ -1,9 +1,13 @@
 local M = {}
 
-function M.setup()
-    local tc = require("todo-comments")
+M.keymap = {
+    { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Search TODO comments" },
+    { "]t", function() require("todo-comments").jump_next() end, desc = "Next TODO comment" },
+    { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous TODO comment" },
+}
 
-    tc.setup({
+function M.setup()
+    require("todo-comments").setup({
         signs = true, -- show icons in the sign column
         merge_keywords = true, -- merge custom keywords with default ones
         highlight = {
@@ -18,12 +22,6 @@ function M.setup()
             max_line_len = 400, -- ignore lines longer than this
             exclude = {}, -- list of file types to exclude
         },
-    })
-
-    require("which-key").add({
-        { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Search TODO comments" },
-        { "]t", tc.jump_next, desc = "Next TODO comment" },
-        { "[t", tc.jump_prev, desc = "Previous TODO comment" },
     })
 end
 

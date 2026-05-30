@@ -1,5 +1,16 @@
 local M = {}
 
+M.keymap = {
+    {
+        "<leader>lf",
+        function()
+            require("conform").format({ async = true, lsp_format = "fallback" })
+        end,
+        desc = "Format Document",
+        mode = { "n", "v" },
+    },
+}
+
 function M.setup()
     require("conform").setup({
         formatters_by_ft = {
@@ -27,18 +38,6 @@ function M.setup()
         -- Only notify on actual errors, not when no formatter is found
         notify_on_error = true,
         notify_no_formatters = false,
-    })
-
-    -- <leader>lf formats the current buffer (or visual selection) manually
-    require("which-key").add({
-        {
-            "<leader>lf",
-            function()
-                require("conform").format({ async = true, lsp_format = "fallback" })
-            end,
-            desc = "Format Document",
-            mode = { "n", "v" },
-        },
     })
 end
 

@@ -109,8 +109,7 @@ return {
         vim.lsp.enable("gopls")
     end,
     on_attach = function(_, bufnr)
-        local wk = require("which-key")
-        wk.add({
+        require("core.load").keymap({
             { "<leader>lI", iferr, desc = "iferr: generate error block" },
             { "<leader>lg", group = "Go Tools" },
             { "<leader>lgi", go_impl, desc = "Generate interface stubs (impl)" },
