@@ -83,6 +83,7 @@ local function setup_treesitter_objects()
                     fn(query, "textobjects")
                 end,
                 desc = desc,
+                mode = { "n", "x", "o" },
             })
         end
     end
@@ -103,6 +104,7 @@ local function setup_treesitter_objects()
                 fn(query)
             end,
             desc = desc,
+            mode = { "n", "x", "o" },
         })
     end
 
@@ -146,6 +148,7 @@ local function setup_treesitter_objects()
                 tselect.select_textobject(query, "textobjects")
             end,
             desc = desc,
+            mode = { "x", "o" },
         })
     end
 

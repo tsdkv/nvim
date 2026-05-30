@@ -2,16 +2,22 @@ local M = {}
 
 M.keymap = {
     { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-    { "<leader>gb", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle current line blame" },
     {
-        "<leader>gn",
+        "<leader>gb",
+        function()
+            require("gitsigns").toggle_current_line_blame()
+        end,
+        desc = "Toggle current line blame",
+    },
+    {
+        "<leader>]h",
         function()
             require("gitsigns").nav_hunk("next")
         end,
         desc = "Next hunk",
     },
     {
-        "<leader>gp",
+        "<leader>[h",
         function()
             require("gitsigns").nav_hunk("prev")
         end,
