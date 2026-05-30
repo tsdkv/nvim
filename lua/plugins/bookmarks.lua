@@ -1,8 +1,8 @@
 local M = {}
 
--- ""
 M.setup = function()
     require("bookmarks").setup({
+        save_file = vim.fn.stdpath("data") .. "/bookmarks",
         keywords = {
             ["@t"] = "󰄲 ",
             ["@w"] = "󰀪 ",
