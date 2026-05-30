@@ -7,7 +7,13 @@ local function keymaps(bufnr)
         { "gd", vim.lsp.buf.definition, desc = "Go to Definition" },
         { "gD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
         { "gi", vim.lsp.buf.implementation, desc = "Go to Implementation" },
-        { "gr", vim.lsp.buf.references, desc = "Go to References" },
+        {
+            "gr",
+            function()
+                require("telescope.builtin").lsp_references({ initial_mode = "normal" })
+            end,
+            desc = "Go to References",
+        },
         { "gt", vim.lsp.buf.type_definition, desc = "Go to Type Definition" },
 
         {
