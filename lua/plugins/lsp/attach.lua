@@ -100,10 +100,17 @@ local function document_highlight(_, bufnr)
 end
 
 function M.on_attach(client, bufnr)
-    keymaps(bufnr)
+    -- Prevent duplicate keymap registrations when multiple LSPs attach to the same buffer
+    if not vim.b[bufnr].lsp_keymaps_added then
+        vim.b[bufnr].lsp_keymaps_added = true
+        keymaps(bufnr)
+    end
 
     if client:supports_method("textDocument/inlayHint", bufnr) then
-        inlay_hints(bufnr)
+        if not vim.b[bufnr].lsp_inlay_hints_added then
+            vim.b[bufnr].lsp_inlay_hints_added = true
+            inlay_hints(bufnr)
+        end
     end
 
     if client:supports_method("textDocument/documentHighlight") then
