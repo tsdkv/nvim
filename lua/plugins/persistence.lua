@@ -6,6 +6,17 @@ M.setup = function()
         branch = true,
     })
 
+    -- Fix for missing Treesitter syntax highlight and LSP attach after session load
+    vim.api.nvim_create_autocmd("SessionLoadPost", {
+        group = vim.api.nvim_create_augroup("PersistenceLoadPost", { clear = true }),
+        callback = function()
+            vim.schedule(function()
+                vim.cmd("silent! doautoall BufReadPost")
+                vim.cmd("silent! doautoall FileType")
+            end)
+        end,
+    })
+
     require("which-key").add({
         {
             "<leader>qs",
