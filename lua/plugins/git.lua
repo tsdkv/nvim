@@ -79,7 +79,6 @@ M.setup = function()
             col = 1,
         },
     })
-    gitsigns.toggle_signs(true)
 end
 
 return M

@@ -184,7 +184,7 @@ M.setup = function()
             "markdown",
             "markdown_inline",
         })
-    end)
+    end, "treesitter-install")
 
     vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("CoreTreesitter", { clear = true }),

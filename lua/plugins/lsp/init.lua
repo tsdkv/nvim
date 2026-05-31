@@ -51,7 +51,7 @@ function M.setup()
             handlers[mod.name] = mod.on_attach
         end
         if mod.filetypes and mod.setup then
-            load.on_filetype(mod.filetypes, mod.setup)
+            load.on_filetype(mod.filetypes, mod.setup, "LSP: " .. mod.name)
         end
     end
 
@@ -60,7 +60,7 @@ function M.setup()
             ensure_installed = tools,
             run_on_start = true,
         })
-    end)
+    end, "mason-tool-installer")
 
     local attach = require("plugins.lsp.attach")
     vim.api.nvim_create_autocmd("LspAttach", {

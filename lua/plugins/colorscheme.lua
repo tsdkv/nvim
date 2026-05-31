@@ -2,6 +2,7 @@ local M = {}
 
 function M.setup()
     vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("CustomColorscheme", { clear = true }),
         callback = function()
             vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#616E88", bg = "NONE", italic = true })
             vim.api.nvim_set_hl(0, "NormalFloat", { fg = "#D8DEE9", bg = "#3b4252" })

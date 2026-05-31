@@ -1,6 +1,61 @@
-local actions = require("telescope.actions")
+local M = {}
+
+local setup_done = false
+function M.ensure_setup()
+    if setup_done then return end
+    setup_done = true
+
+    local ts = require("telescope")
+    ts.setup({
+        defaults = {
+            prompt_prefix = "",
+            selection_caret = "  ",
+            path_display = { "truncate" },
+            sorting_strategy = "ascending",
+            layout_config = {
+                horizontal = {
+                    prompt_position = "top",
+                    preview_width = 0.55,
+                },
+                vertical = {
+                    prompt_position = "top",
+                    mirror = true,
+                },
+            },
+            mappings = {
+                i = {
+                    ["<C-f>"] = function(...)
+                        return require("telescope.actions").to_fuzzy_refine(...)
+                    end,
+                },
+            },
+        },
+        extensions = {
+            fzf = {
+                fuzzy = true,
+                override_generic_sorter = true,
+                override_file_sorter = true,
+                case_mode = "smart_case",
+            },
+            ["ui-select"] = {
+                require("telescope.themes").get_dropdown({
+                    winblend = 10,
+                    borderchars = {
+                        prompt = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
+                        results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+                        preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+                    },
+                }),
+            },
+        },
+    })
+    ts.load_extension("bookmarks")
+    ts.load_extension("fzf")
+    ts.load_extension("ui-select")
+end
 
 local function cool_buffers()
+    M.ensure_setup()
     local opts = {
         previewer = false,
         sort_mru = false,
@@ -17,6 +72,7 @@ local function cool_buffers()
     }
 
     opts.attach_mappings = function(prompt_bufnr, map)
+        local actions = require("telescope.actions")
         local action_state = require("telescope.actions.state")
 
         map("n", "d", actions.delete_buffer)
@@ -46,74 +102,42 @@ local function cool_buffers()
     require("telescope.builtin").buffers(require("telescope.themes").get_dropdown(opts))
 end
 
-local M = {}
+local function run_builtin(name)
+    return function()
+        M.ensure_setup()
+        require("telescope.builtin")[name]()
+    end
+end
 
 M.keymap = {
-    { "<leader>f<cr>", "<cmd>Telescope resume<cr>", desc = "Resume last search" },
-    { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-    { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
+    { "<leader>f<cr>", run_builtin("resume"), desc = "Resume last search" },
+    { "<leader>ff", run_builtin("find_files"), desc = "Find files" },
+    { "<leader>fg", run_builtin("live_grep"), desc = "Live grep" },
     { "<leader>fb", cool_buffers, desc = "Buffers" },
-    { "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
-    { "<leader>fm", "<cmd>Telescope bookmarks list<cr>", desc = "Bookmarks" },
-    { "<leader>fs", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document symbols" },
-    { "<leader>fS", "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
-    { "<leader>fr", "<cmd>Telescope lsp_references<cr>", desc = "LSP references" },
-    { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
-    { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
-    { "<leader>fc", "<cmd>Telescope commands<cr>", desc = "Commands" },
-    { "<leader>fd", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
-    { "<leader>fw", "<cmd>Telescope grep_string<cr>", desc = "Grep word under cursor" },
-    { "<leader>gs", "<cmd>Telescope git_status<cr>", desc = "Git status" },
-    { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Git commits" },
+    { "<leader>fo", run_builtin("oldfiles"), desc = "Recent files" },
+    { "<leader>fm", function() M.ensure_setup(); vim.cmd("Telescope bookmarks list") end, desc = "Bookmarks" },
+    { "<leader>fs", run_builtin("lsp_document_symbols"), desc = "Document symbols" },
+    { "<leader>fS", run_builtin("lsp_workspace_symbols"), desc = "Workspace symbols" },
+    { "<leader>fr", run_builtin("lsp_references"), desc = "LSP references" },
+    { "<leader>fh", run_builtin("help_tags"), desc = "Help tags" },
+    { "<leader>fk", run_builtin("keymaps"), desc = "Keymaps" },
+    { "<leader>fc", run_builtin("commands"), desc = "Commands" },
+    { "<leader>fd", run_builtin("diagnostics"), desc = "Diagnostics" },
+    { "<leader>fw", run_builtin("grep_string"), desc = "Grep word under cursor" },
+    { "<leader>gs", run_builtin("git_status"), desc = "Git status" },
+    { "<leader>gc", run_builtin("git_commits"), desc = "Git commits" },
 }
 
 function M.setup()
-    local ts = require("telescope")
-
-    ts.setup({
-        defaults = {
-            prompt_prefix = "",
-            selection_caret = "  ",
-            path_display = { "truncate" },
-            sorting_strategy = "ascending",
-            layout_config = {
-                horizontal = {
-                    prompt_position = "top",
-                    preview_width = 0.55,
-                },
-                vertical = {
-                    prompt_position = "top",
-                    mirror = true, -- keeps prompt on top in vertical layout
-                },
-            },
-            mappings = {
-                i = {
-                    ["<C-f>"] = actions.to_fuzzy_refine,
-                },
-            },
-        },
-        extensions = {
-            fzf = {
-                fuzzy = true,
-                override_generic_sorter = true,
-                override_file_sorter = true,
-                case_mode = "smart_case",
-            },
-            ["ui-select"] = {
-                require("telescope.themes").get_dropdown({
-                    winblend = 10,
-                    borderchars = {
-                        prompt = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
-                        results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
-                        preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-                    },
-                }),
-            },
-        },
+    -- Fallback: if the user types `:Telescope` manually, ensure it's set up
+    vim.api.nvim_create_autocmd("CmdlineEnter", {
+        pattern = ":",
+        once = true,
+        callback = function()
+            vim.schedule(M.ensure_setup)
+        end
     })
-    ts.load_extension("bookmarks")
-    ts.load_extension("fzf")
-    ts.load_extension("ui-select")
 end
+
 
 return M

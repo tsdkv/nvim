@@ -20,17 +20,13 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Reload buffers changed on disk when nvim regains focus
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
     group = vim.api.nvim_create_augroup("CheckTime", { clear = true }),
-    callback = function()
-        vim.cmd("checktime")
-    end,
+    command = "checktime",
 })
 
 -- Equalize splits when the terminal window is resized
 vim.api.nvim_create_autocmd("VimResized", {
     group = vim.api.nvim_create_augroup("ResizeWindows", { clear = true }),
-    callback = function()
-        vim.cmd("wincmd =")
-    end,
+    command = "wincmd =",
 })
 
 -- Close utility/readonly windows with just q

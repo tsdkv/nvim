@@ -4,7 +4,7 @@ M.keymap = {
     {
         "<leader>uN",
         function()
-            MiniNotify.show_history()
+            require("mini.notify").show_history()
         end,
         desc = "Show Notification History",
     },

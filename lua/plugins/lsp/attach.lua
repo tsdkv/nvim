@@ -4,17 +4,39 @@ local M = {}
 
 local function keymaps(bufnr)
     load.keymap({
-        { "gd", require("telescope.builtin").lsp_definitions, desc = "Go to Definition" },
+        {
+            "gd",
+            function()
+                require("plugins.telescope").ensure_setup()
+                require("telescope.builtin").lsp_definitions()
+            end,
+            desc = "Go to Definition",
+        },
         { "gD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
-        { "gi", require("telescope.builtin").lsp_implementations, desc = "Go to Implementation" },
+        {
+            "gi",
+            function()
+                require("plugins.telescope").ensure_setup()
+                require("telescope.builtin").lsp_implementations()
+            end,
+            desc = "Go to Implementation",
+        },
         {
             "gr",
             function()
+                require("plugins.telescope").ensure_setup()
                 require("telescope.builtin").lsp_references({ initial_mode = "normal" })
             end,
             desc = "Go to References",
         },
-        { "gt", require("telescope.builtin").lsp_type_definitions, desc = "Go to Type Definition" },
+        {
+            "gt",
+            function()
+                require("plugins.telescope").ensure_setup()
+                require("telescope.builtin").lsp_type_definitions()
+            end,
+            desc = "Go to Type Definition",
+        },
 
         {
             "<leader>lh",
@@ -32,7 +54,14 @@ local function keymaps(bufnr)
         },
         { "<leader>la", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
         { "<leader>lr", vim.lsp.buf.rename, desc = "Rename Symbol" },
-        { "<leader>ls", require("telescope.builtin").lsp_document_symbols, desc = "Document Symbols" },
+        {
+            "<leader>ls",
+            function()
+                require("plugins.telescope").ensure_setup()
+                require("telescope.builtin").lsp_document_symbols()
+            end,
+            desc = "Document Symbols",
+        },
         {
             "<leader>ld",
             function()
