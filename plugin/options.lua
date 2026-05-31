@@ -8,7 +8,7 @@ vim.schedule(function()
     vim.o.clipboard = "unnamedplus"
 end)
 vim.o.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.opt.listchars = { tab = "▏ ", trail = "·", nbsp = "␣" }
 
 vim.o.expandtab = true
 vim.o.tabstop = 4
