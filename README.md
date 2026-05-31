@@ -24,6 +24,8 @@ This configuration leverages Neovim 0.12's native `vim.pack` functionality combi
 └── init.lua      # Entry point (sets leader keys and initializes plugins)
 ```
 
+> **Note:** You can run `:LoadTrace` at any time to open a detailed breakdown of the startup sequence, background task execution, and total initialization times.
+
 ## Requirements
 
 - Neovim 0.12+
