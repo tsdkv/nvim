@@ -12,7 +12,7 @@ M.setup = function()
     require("flash").setup({
         modes = {
             char = {
-                enabled = true,
+                enabled = false,
                 jump_labels = true,
             },
         },

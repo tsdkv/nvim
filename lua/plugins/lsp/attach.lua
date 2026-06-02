@@ -5,7 +5,7 @@ local M = {}
 local function keymaps(bufnr)
     load.keymap({
         {
-            "gd",
+            "grd",
             function()
                 require("plugins.telescope").ensure_setup()
                 require("telescope.builtin").lsp_definitions()
@@ -14,7 +14,7 @@ local function keymaps(bufnr)
         },
         { "gD", vim.lsp.buf.declaration, desc = "Go to Declaration" },
         {
-            "gi",
+            "gri",
             function()
                 require("plugins.telescope").ensure_setup()
                 require("telescope.builtin").lsp_implementations()
@@ -22,7 +22,7 @@ local function keymaps(bufnr)
             desc = "Go to Implementation",
         },
         {
-            "gr",
+            "grr",
             function()
                 require("plugins.telescope").ensure_setup()
                 require("telescope.builtin").lsp_references({ initial_mode = "normal" })
@@ -30,7 +30,7 @@ local function keymaps(bufnr)
             desc = "Go to References",
         },
         {
-            "gt",
+            "grt",
             function()
                 require("plugins.telescope").ensure_setup()
                 require("telescope.builtin").lsp_type_definitions()
@@ -52,8 +52,8 @@ local function keymaps(bufnr)
             end,
             desc = "Signature Help",
         },
-        { "<leader>la", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
-        { "<leader>lr", vim.lsp.buf.rename, desc = "Rename Symbol" },
+        { "gra", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
+        { "grn", vim.lsp.buf.rename, desc = "Rename Symbol" },
         {
             "<leader>ls",
             function()
