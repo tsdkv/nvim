@@ -22,14 +22,14 @@ M.keymap = {
         desc = "Toggle current line blame",
     },
     {
-        "<leader>]h",
+        "]h",
         function()
             require("gitsigns").nav_hunk("next")
         end,
         desc = "Next hunk",
     },
     {
-        "<leader>[h",
+        "[h",
         function()
             require("gitsigns").nav_hunk("prev")
         end,
@@ -38,7 +38,6 @@ M.keymap = {
 }
 
 M.setup = function()
-
     local gitsigns = require("gitsigns")
     gitsigns.setup({
         signs = {
