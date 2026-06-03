@@ -13,7 +13,7 @@ M.setup = function()
             section_separators = { left = "", right = "" },
             globalstatus = true,
             disabled_filetypes = {
-                statusline = { "toggleterm", "telescope", "lazygit" },
+                statusline = { "toggleterm", "telescope" },
             },
         },
         sections = {

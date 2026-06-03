@@ -43,7 +43,7 @@ load.now(function()
         gh("mason-org/mason.nvim"),
         gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
 
-        gh("kdheepak/lazygit.nvim"),
+
         gh("lewis6991/gitsigns.nvim"),
         gh("karb94/neoscroll.nvim"),
         gh("akinsho/toggleterm.nvim"),

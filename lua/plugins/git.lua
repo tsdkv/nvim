@@ -1,7 +1,19 @@
 local M = {}
 
+local lazygit = nil
+local function toggle_lazygit()
+    if not lazygit then
+        lazygit = require("toggleterm.terminal").Terminal:new({
+            cmd = "lazygit",
+            direction = "float",
+            float_opts = { border = "rounded" },
+        })
+    end
+    lazygit:toggle()
+end
+
 M.keymap = {
-    { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    { "<leader>gg", toggle_lazygit, desc = "LazyGit" },
     {
         "<leader>gb",
         function()
@@ -26,7 +38,6 @@ M.keymap = {
 }
 
 M.setup = function()
-    require("lazygit")
 
     local gitsigns = require("gitsigns")
     gitsigns.setup({
