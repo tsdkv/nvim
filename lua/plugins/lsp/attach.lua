@@ -109,7 +109,8 @@ local function inlay_hints(bufnr)
         {
             "<leader>li",
             function()
-                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+                local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+                vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
             end,
             desc = "Toggle Inlay Hints",
         },
