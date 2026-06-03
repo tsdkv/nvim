@@ -203,7 +203,7 @@ M.setup = function()
         end,
     })
 
-    setup_treesitter_objects()
+    require("core.load").later(setup_treesitter_objects, "treesitter-textobjects")
 end
 
 return M

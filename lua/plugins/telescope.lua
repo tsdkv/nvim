@@ -54,7 +54,7 @@ function M.ensure_setup()
         ts.load_extension("bookmarks")
         ts.load_extension("fzf")
         ts.load_extension("ui-select")
-    end, "treesitter setup")
+    end, "telescope setup")
 end
 
 local function cool_buffers()
