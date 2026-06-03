@@ -11,22 +11,27 @@ end
 
 -- Generate method stubs using the "impl" tool
 local function go_impl()
-    local receiver = vim.fn.input("Receiver (e.g. 'r *MyStruct'): ")
-    if receiver == "" then
-        return
-    end
-    local interface = vim.fn.input("Interface (e.g. 'io.Reader'): ")
-    if interface == "" then
-        return
-    end
-
-    local cmd = string.format("impl %q %q", receiver, interface)
-    local result = vim.fn.systemlist(cmd)
-    if vim.v.shell_error ~= 0 then
-        vim.notify("impl failed: " .. table.concat(result, "\n"), vim.log.levels.ERROR)
-        return
-    end
-    vim.api.nvim_put(result, "l", true, true)
+    vim.ui.input({ prompt = "Receiver (e.g. 'r *MyStruct'): " }, function(receiver)
+        if not receiver or receiver == "" then
+            return
+        end
+        vim.ui.input({ prompt = "Interface (e.g. 'io.Reader'): " }, function(interface)
+            if not interface or interface == "" then
+                return
+            end
+            -- Table-form bypasses the shell, eliminating quoting/injection issues
+            vim.system({ "impl", receiver, interface }, { text = true }, function(obj)
+                vim.schedule(function()
+                    if obj.code ~= 0 then
+                        vim.notify("impl failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
+                        return
+                    end
+                    local lines = vim.split(obj.stdout, "\n", { trimempty = true })
+                    vim.api.nvim_put(lines, "l", true, true)
+                end)
+            end)
+        end)
+    end)
 end
 
 -- Note: add modify tags in future (using gomodifytags CLI)
