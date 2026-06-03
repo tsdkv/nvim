@@ -9,7 +9,7 @@ local function discover_servers()
     return servers
 end
 
-local check_type = require("utils").check_type
+local check_type = require("core.utils").check_type
 local function check_server_config(config)
     check_type("config", config, "table", false)
 

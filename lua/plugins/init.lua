@@ -1,4 +1,4 @@
-local gh = require("utils").github
+local gh = require("core.utils").github
 local load = require("core.load")
 
 -- Hook to automatically run make when telescope-fzf-native is installed/updated
