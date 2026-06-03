@@ -1,43 +1,63 @@
 local M = {}
 
+-- Nord palette — single source of truth for all overrides
+local p = {
+    origin  = "#2e3440", -- nord0
+    polar1  = "#3b4252", -- nord1
+    polar3  = "#4c566a", -- nord3
+    comment = "#616E88", -- dimmed nord3
+    snow0   = "#d8dee9", -- nord4
+    snow1   = "#e5e9f0", -- nord5
+    white   = "#ffffff",
+    red     = "#bf616a", -- nord11
+    orange  = "#d08770", -- nord12
+    green   = "#a3be8c", -- nord14
+    teal    = "#8fbcbb", -- nord7
+    frost   = "#88c0d0", -- nord8
+}
+
+local hl = function(name, opts)
+    vim.api.nvim_set_hl(0, name, opts)
+end
+
 function M.setup()
     vim.api.nvim_create_autocmd("ColorScheme", {
         group = vim.api.nvim_create_augroup("CustomColorscheme", { clear = true }),
         callback = function()
-            vim.api.nvim_set_hl(0, "LspInlayHint", { fg = "#616E88", bg = "NONE", italic = true })
-            vim.api.nvim_set_hl(0, "NormalFloat", { fg = "#D8DEE9", bg = "#3b4252" })
-            vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#4c566a", bg = "#3b4252" })
-            vim.api.nvim_set_hl(0, "Pmenu", { fg = "#D8DEE9", bg = "#3b4252" })
-            vim.api.nvim_set_hl(0, "PmenuSel", { fg = "#E5E9F0", bg = "#4c566a" })
+            hl("LspInlayHint", { fg = p.comment, bg = "NONE", italic = true })
+            hl("NormalFloat", { fg = p.snow0, bg = p.polar1 })
+            hl("FloatBorder", { fg = p.polar3, bg = p.polar1 })
+            hl("Pmenu", { fg = p.snow0, bg = p.polar1 })
+            hl("PmenuSel", { fg = p.snow1, bg = p.polar3 })
 
             -- Underline LSP references: white for reads, bold orange for writes
-            vim.api.nvim_set_hl(0, "LspReferenceText", { bg = "NONE", underline = true, sp = "#FFFFFF" })
-            vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = "NONE", underline = true, sp = "#FFFFFF" })
-            vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = "NONE", underline = true, sp = "#D08770", bold = true })
+            hl("LspReferenceText", { bg = "NONE", underline = true, sp = p.white })
+            hl("LspReferenceRead", { bg = "NONE", underline = true, sp = p.white })
+            hl("LspReferenceWrite", { bg = "NONE", underline = true, sp = p.orange, bold = true })
 
-            vim.api.nvim_set_hl(0, "MiniNotifyNormal", { fg = "#D8DEE9", bg = "#2e3440" })
-            vim.api.nvim_set_hl(0, "MiniNotifyBorder", { fg = "#3B4252", bg = "#2e3440" })
+            hl("MiniNotifyNormal", { fg = p.snow0, bg = p.origin })
+            hl("MiniNotifyBorder", { fg = p.polar1, bg = p.origin })
 
-            vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#d8dee9", bold = true })
-            vim.api.nvim_set_hl(0, "CursorLine", { bg = "#3b4252" })
+            hl("CursorLineNr", { fg = p.snow0, bold = true })
+            hl("CursorLine", { bg = p.polar1 })
 
             -- NeoTree
             local normal_bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
             local panel_bg = vim.api.nvim_get_hl(0, { name = "NeoTreeNormal" }).bg
                 or vim.api.nvim_get_hl(0, { name = "NormalFloat" }).bg
 
-            vim.api.nvim_set_hl(0, "NeoTreeTabActive", { bg = panel_bg, fg = "#ffffff", bold = true })
-            vim.api.nvim_set_hl(0, "NeoTreeTabInactive", {
+            hl("NeoTreeTabActive", { bg = panel_bg, fg = p.white, bold = true })
+            hl("NeoTreeTabInactive", {
                 bg = normal_bg,
                 fg = vim.api.nvim_get_hl(0, { name = "Comment" }).fg,
             })
-            vim.api.nvim_set_hl(0, "NeoTreeTabSeparatorActive", { bg = panel_bg, fg = panel_bg })
-            vim.api.nvim_set_hl(0, "NeoTreeTabSeparatorInactive", { bg = normal_bg, fg = normal_bg })
-            vim.api.nvim_set_hl(0, "NeoTreeWinSeparator", { link = "WinSeparator" })
+            hl("NeoTreeTabSeparatorActive", { bg = panel_bg, fg = panel_bg })
+            hl("NeoTreeTabSeparatorInactive", { bg = normal_bg, fg = normal_bg })
+            hl("NeoTreeWinSeparator", { link = "WinSeparator" })
 
-            -- bookmarks
-            vim.api.nvim_set_hl(0, "BookMarksAdd", { fg = "#88c0d0", bg = "NONE", default = false })
-            vim.api.nvim_set_hl(0, "BookMarksAnn", { fg = "#88c0d0", bg = "NONE", default = false })
+            -- Bookmarks
+            hl("BookMarksAdd", { fg = p.frost, bg = "NONE", default = false })
+            hl("BookMarksAnn", { fg = p.frost, bg = "NONE", default = false })
         end,
     })
 
