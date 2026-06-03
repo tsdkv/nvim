@@ -146,7 +146,10 @@ function M.on_attach(client, bufnr)
     end
 
     if client:supports_method("textDocument/documentHighlight") then
-        document_highlight(client, bufnr)
+        if not vim.b[bufnr].lsp_doc_highlight_added then
+            vim.b[bufnr].lsp_doc_highlight_added = true
+            document_highlight(client, bufnr)
+        end
     end
 end
 
