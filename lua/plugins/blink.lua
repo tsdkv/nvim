@@ -2,7 +2,10 @@ local M = {}
 
 function M.setup()
     require("blink.cmp").setup({
-        keymap = { preset = "default" },
+        keymap = {
+            preset = "default",
+            ["<CR>"] = { "fallback" }, -- Ensure Enter always inserts a newline
+        },
 
         appearance = {
             -- 'mono' for Nerd Font Mono, 'normal' for Nerd Font
