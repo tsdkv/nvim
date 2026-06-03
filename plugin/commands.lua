@@ -84,9 +84,6 @@ local function show_loader_trace()
     -- Open in a vertical split
     vim.cmd("vsplit")
     vim.api.nvim_win_set_buf(0, buf)
-
-    -- Press 'q' to close
-    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = buf, silent = true, noremap = true })
 end
 
 vim.api.nvim_create_user_command("LoadTrace", show_loader_trace, { desc = "Show configuration loader trace log" })

@@ -10,6 +10,10 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd("BufReadPost", {
     group = vim.api.nvim_create_augroup("RestoreCursor", { clear = true }),
     callback = function(ev)
+        local exclude = { "gitcommit", "gitrebase" }
+        if vim.tbl_contains(exclude, vim.bo[ev.buf].filetype) then
+            return
+        end
         local mark = vim.api.nvim_buf_get_mark(ev.buf, '"')
         if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(ev.buf) then
             pcall(vim.api.nvim_win_set_cursor, 0, mark)
@@ -32,8 +36,16 @@ vim.api.nvim_create_autocmd("VimResized", {
 -- Close utility/readonly windows with just q
 vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("CloseWithQ", { clear = true }),
-    pattern = { "help", "qf", "man", "notify", "lspinfo", "startuptime", "checkhealth" },
+    pattern = { "help", "qf", "man", "notify", "lspinfo", "startuptime", "checkhealth", "loadtrace" },
     callback = function(ev)
         vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = ev.buf, silent = true })
+    end,
+})
+
+-- Prevent Neovim from automatically inserting comment leaders on new lines
+vim.api.nvim_create_autocmd("BufEnter", {
+    group = vim.api.nvim_create_augroup("DisableAutoComment", { clear = true }),
+    callback = function()
+        vim.opt.formatoptions:remove({ "c", "r", "o" })
     end,
 })
