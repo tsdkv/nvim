@@ -37,13 +37,21 @@ M.setup = function()
         branch = true,
     })
 
-    -- Fix for missing Treesitter syntax highlight and LSP attach after session load
+    -- When <leader>qs fires before deferred plugins finish loading,
+    -- restored buffers miss their FileType event. Re-trigger it manually.
+    -- Only FileType is needed — BufReadPost would re-run cursor restore, checktime, etc.
     vim.api.nvim_create_autocmd("SessionLoadPost", {
         group = vim.api.nvim_create_augroup("PersistenceLoadPost", { clear = true }),
         callback = function()
             vim.schedule(function()
-                vim.cmd("silent! doautoall BufReadPost")
-                vim.cmd("silent! doautoall FileType")
+                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                    if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype ~= "" then
+                        vim.api.nvim_exec_autocmds("FileType", {
+                            buffer = buf,
+                            data = { filetype = vim.bo[buf].filetype },
+                        })
+                    end
+                end
             end)
         end,
     })
