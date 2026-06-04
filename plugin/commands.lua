@@ -12,14 +12,8 @@ vim.api.nvim_create_user_command("PackClean", function()
         return
     end
 
-    vim.ui.select({ "Yes", "No" }, {
-        prompt = "Remove unused plugins?",
-    }, function(choice)
-        if choice == "Yes" then
-            vim.pack.del(unused)
-            print("Unused plugins removed.")
-        end
-    end)
+    vim.pack.del(unused)
+    print("Removed " .. #unused .. " unused plugin(s).")
 end, { desc = "Find and remove unused plugins" })
 
 vim.api.nvim_create_user_command("PackUpdate", function(opts)
