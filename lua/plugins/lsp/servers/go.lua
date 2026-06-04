@@ -34,7 +34,41 @@ local function go_impl()
     end)
 end
 
--- Note: add modify tags in future (using gomodifytags CLI)
+-- Add or remove struct tags using gomodifytags
+local function go_modify_tags(clear)
+    local fname = vim.fn.expand("%:p")
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local offset = vim.fn.line2byte(row) + col
+
+    if clear then
+        vim.system({ "gomodifytags", "-file", fname, "-offset", tostring(offset), "-clear-tags", "-w" }, { text = true }, function(obj)
+            vim.schedule(function()
+                if obj.code == 0 then
+                    vim.cmd("checktime")
+                else
+                    vim.notify("gomodifytags failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
+                end
+            end)
+        end)
+        return
+    end
+
+    vim.ui.input({ prompt = "Add tags (e.g. json,yaml): ", default = "json" }, function(tags)
+        if not tags or tags == "" then return end
+        vim.ui.select({ "snakecase", "camelcase", "lispcase", "pascalcase", "keep" }, { prompt = "Transform: " }, function(transform)
+            if not transform then return end
+            vim.system({ "gomodifytags", "-file", fname, "-offset", tostring(offset), "-add-tags", tags, "-transform", transform, "-w" }, { text = true }, function(obj)
+                vim.schedule(function()
+                    if obj.code == 0 then
+                        vim.cmd("checktime")
+                    else
+                        vim.notify("gomodifytags failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
+                    end
+                end)
+            end)
+        end)
+    end)
+end
 
 -- Toggle staticcheck dynamically for gopls in the current session
 local function toggle_staticcheck()
@@ -65,7 +99,7 @@ end
 return {
     name = "gopls",
     filetypes = { "go", "gomod", "gowork", "gotmpl" },
-    tools = { "gopls", "iferr", "goimports", "gofumpt", "impl" },
+    tools = { "gopls", "iferr", "goimports", "gofumpt", "impl", "gomodifytags" },
     setup = function()
         vim.lsp.config("gopls", {
             cmd = { "gopls" },
@@ -107,7 +141,17 @@ return {
                     -- directoryFilters = { "-**/node_modules", "-**/.git", "-**/.venv" },
 
                     -- Background vulnerability scanning (shows alerts for vulnerable packages in your imports)
-                    -- vulncheck = "Imports",
+                    vulncheck = "Imports",
+
+                    -- Code lenses for inline actions (run tests, generate, toggle gc details)
+                    codelenses = {
+                        generate = true,
+                        gc_details = true,
+                        test = false, -- disabled per your request
+                        tidy = true,
+                        vendor = true,
+                        upgrade_dependency = true,
+                    },
                 },
             },
         })
@@ -115,10 +159,12 @@ return {
     end,
     on_attach = function(_, bufnr)
         require("core.load").keymap({
-            { "<leader>lI", iferr, desc = "iferr: generate error block" },
             { "<leader>lg", group = "Go Tools" },
+            { "<leader>lge", iferr, desc = "iferr: generate error block" },
             { "<leader>lgi", go_impl, desc = "Generate interface stubs (impl)" },
             { "<leader>lgs", toggle_staticcheck, desc = "Toggle staticcheck" },
+            { "<leader>lgt", function() go_modify_tags(false) end, desc = "Add Struct Tags" },
+            { "<leader>lgT", function() go_modify_tags(true) end, desc = "Clear Struct Tags" },
         }, { buffer = bufnr })
     end,
 }

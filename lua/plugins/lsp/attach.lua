@@ -53,6 +53,7 @@ local function keymaps(bufnr)
             desc = "Signature Help",
         },
         { "gra", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
+        { "grc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" } },
         { "grn", vim.lsp.buf.rename, desc = "Rename Symbol" },
         {
             "<leader>ls",
@@ -131,7 +132,7 @@ local function document_highlight(_, bufnr)
     })
 end
 
-function M.on_attach(client, bufnr)
+M.on_attach = function(client, bufnr)
     -- Prevent duplicate keymap registrations when multiple LSPs attach to the same buffer
     if not vim.b[bufnr].lsp_keymaps_added then
         vim.b[bufnr].lsp_keymaps_added = true
@@ -149,6 +150,13 @@ function M.on_attach(client, bufnr)
         if not vim.b[bufnr].lsp_doc_highlight_added then
             vim.b[bufnr].lsp_doc_highlight_added = true
             document_highlight(client, bufnr)
+        end
+    end
+
+    if client:supports_method("textDocument/codeLens", bufnr) then
+        if not vim.b[bufnr].lsp_codelens_added then
+            vim.b[bufnr].lsp_codelens_added = true
+            vim.lsp.codelens.enable(true, { bufnr = bufnr })
         end
     end
 end
