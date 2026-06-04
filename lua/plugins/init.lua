@@ -15,7 +15,10 @@ vim.api.nvim_create_autocmd("PackChanged", {
                     if obj.code == 0 then
                         vim.notify("Finished building telescope-fzf-native", vim.log.levels.INFO)
                     else
-                        vim.notify("Failed building telescope-fzf-native:\n" .. (obj.stderr or ""), vim.log.levels.ERROR)
+                        vim.notify(
+                            "Failed building telescope-fzf-native:\n" .. (obj.stderr or ""),
+                            vim.log.levels.ERROR
+                        )
                     end
                 end)
             end)
@@ -24,7 +27,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 })
 
 vim.pack.add({
-    gh("nordtheme/vim"),
+    gh("tsdkv/nord.nvim"),
 })
 load.now("plugins.colorscheme")
 
@@ -42,7 +45,6 @@ load.now(function()
 
         gh("mason-org/mason.nvim"),
         gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
-
 
         gh("lewis6991/gitsigns.nvim"),
         gh("karb94/neoscroll.nvim"),

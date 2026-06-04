@@ -68,6 +68,10 @@
       "rev": "c8d29979cb0cb3a2437a8e0ae683fd82f340d3b8",
       "src": "https://github.com/karb94/neoscroll.nvim"
     },
+    "nord.nvim": {
+      "rev": "c6ddca42a3f90ae10087f6624b7999e4c19b20d4",
+      "src": "https://github.com/tsdkv/nord.nvim"
+    },
     "nui.nvim": {
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
       "src": "https://github.com/MunifTanjim/nui.nvim"
@@ -111,10 +115,6 @@
     "toggleterm.nvim": {
       "rev": "9a88eae817ef395952e08650b3283726786fb5fb",
       "src": "https://github.com/akinsho/toggleterm.nvim"
-    },
-    "vim": {
-      "rev": "f13f5dfbb784deddbc1d8195f34dfd9ec73e2295",
-      "src": "https://github.com/nordtheme/vim"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
