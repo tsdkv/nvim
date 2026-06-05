@@ -2,8 +2,9 @@ local M = {}
 
 M.setup = function()
     local custom_nord = require("lualine.themes.nord")
-    custom_nord.insert.a.bg = "#A3BE8C" -- Nord green
-    custom_nord.insert.a.fg = "#2E3440" -- Nord dark
+    local c = require("nord.palette")
+    custom_nord.insert.a.bg = c.green
+    custom_nord.insert.a.fg = c.nord0
 
     require("lualine").setup({
         options = {
@@ -32,9 +33,9 @@ M.setup = function()
                     "diff",
                     -- symbols = { added = "+", modified = "~", removed = "-" },
                     diff_color = {
-                        added = { fg = "#A3BE8C" },
-                        modified = { fg = "#D08770" },
-                        removed = { fg = "#BF616A" },
+                        added = { fg = c.green },
+                        modified = { fg = c.orange },
+                        removed = { fg = c.error },
                     },
                     cond = function()
                         return vim.fn.winwidth(0) > 60

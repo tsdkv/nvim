@@ -69,7 +69,7 @@
       "src": "https://github.com/karb94/neoscroll.nvim"
     },
     "nord.nvim": {
-      "rev": "c6ddca42a3f90ae10087f6624b7999e4c19b20d4",
+      "rev": "baf28f0c5f9ef6e2fc606727bd8077ce4341714d",
       "src": "https://github.com/tsdkv/nord.nvim"
     },
     "nui.nvim": {

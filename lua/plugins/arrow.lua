@@ -17,15 +17,7 @@ M.setup = function()
         },
     })
 
-    -- Force the Arrow floating window background to match the main editor background
-    vim.api.nvim_create_autocmd("BufWinEnter", {
-        group = vim.api.nvim_create_augroup("ArrowWindowStyle", { clear = true }),
-        callback = function(ev)
-            if vim.b[ev.buf].filename and vim.b[ev.buf].arrow_current_mode then
-                vim.wo.winhighlight = "Normal:Normal,FloatBorder:Comment"
-            end
-        end,
-    })
+
 end
 
 return M
