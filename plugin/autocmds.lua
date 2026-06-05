@@ -49,3 +49,35 @@ vim.api.nvim_create_autocmd("BufEnter", {
         vim.opt.formatoptions:remove({ "c", "r", "o" })
     end,
 })
+
+-- Detect git branch switches and gracefully restart LSP
+local branch_switch_group = vim.api.nvim_create_augroup("BranchSwitchLSP", { clear = true })
+local last_branch = nil
+
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+    group = branch_switch_group,
+    callback = function()
+        vim.system({ "git", "rev-parse", "--abbrev-ref", "HEAD" }, { text = true }, function(obj)
+            if obj.code ~= 0 then
+                return
+            end
+            local branch = vim.trim(obj.stdout)
+            vim.schedule(function()
+                if last_branch and branch ~= last_branch then
+                    for _, client in ipairs(vim.lsp.get_clients()) do
+                        client:stop()
+                        vim.defer_fn(function()
+                            vim.lsp.start(client.config, {
+                                reuse_client = function()
+                                    return false
+                                end,
+                            })
+                        end, 200)
+                    end
+                    vim.notify("Branch → " .. branch .. " (LSP restarting)", vim.log.levels.INFO)
+                end
+                last_branch = branch
+            end)
+        end)
+    end,
+})

@@ -102,6 +102,19 @@ local function keymaps(bufnr)
             end,
             desc = "Next Error",
         },
+        {
+            "<leader>lR",
+            function()
+                for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+                    client:stop()
+                end
+                vim.defer_fn(function()
+                    vim.cmd("edit")
+                end, 200)
+                vim.notify("LSP restarting...", vim.log.levels.INFO)
+            end,
+            desc = "Restart LSP",
+        },
     }, { buffer = bufnr })
 end
 
@@ -123,7 +136,13 @@ local function document_highlight(_, bufnr)
     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
         group = group,
         buffer = bufnr,
-        callback = vim.lsp.buf.document_highlight,
+        callback = function()
+            -- Skip if no LSP clients are ready (e.g. during restart after branch switch)
+            local clients = vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/documentHighlight" })
+            if #clients > 0 then
+                vim.lsp.buf.document_highlight()
+            end
+        end,
     })
     vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
         group = group,
