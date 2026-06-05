@@ -35,6 +35,20 @@ M.keymap = {
         end,
         desc = "Prev hunk",
     },
+    {
+        "<leader>gp",
+        function()
+            require("gitsigns").preview_hunk()
+        end,
+        desc = "Preview hunk (floating window)",
+    },
+    {
+        "<leader>gP",
+        function()
+            require("gitsigns").preview_hunk_inline()
+        end,
+        desc = "Preview hunk (inline)",
+    },
 }
 
 M.setup = function()
