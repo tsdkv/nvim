@@ -29,6 +29,14 @@ function M.ensure_setup()
                         ["<C-f>"] = function(...)
                             return require("telescope.actions").to_fuzzy_refine(...)
                         end,
+                        ["<c-t>"] = function(...)
+                            return require("trouble.sources.telescope").open(...)
+                        end,
+                    },
+                    n = {
+                        ["<c-t>"] = function(...)
+                            return require("trouble.sources.telescope").open(...)
+                        end,
                     },
                 },
             },

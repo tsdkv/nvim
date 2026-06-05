@@ -42,6 +42,7 @@ load.now(function()
         gh("folke/todo-comments.nvim"),
         gh("folke/flash.nvim"),
         gh("folke/persistence.nvim"),
+        gh("folke/trouble.nvim"),
 
         gh("mason-org/mason.nvim"),
         gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
@@ -102,6 +103,7 @@ load.later("plugins.neoscroll")
 load.later("plugins.telescope")
 load.later("plugins.zen-mode")
 load.later("plugins.todo-comments")
+load.later("plugins.trouble")
 load.later("plugins.arrow")
 load.later("plugins.flash")
 load.later("plugins.toggleterm")

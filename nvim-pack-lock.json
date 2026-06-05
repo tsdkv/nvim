@@ -69,7 +69,7 @@
       "src": "https://github.com/karb94/neoscroll.nvim"
     },
     "nord.nvim": {
-      "rev": "baf28f0c5f9ef6e2fc606727bd8077ce4341714d",
+      "rev": "e44a337f6ba129b1f5952028e0f833de34e6b53e",
       "src": "https://github.com/tsdkv/nord.nvim"
     },
     "nui.nvim": {
@@ -115,6 +115,10 @@
     "toggleterm.nvim": {
       "rev": "9a88eae817ef395952e08650b3283726786fb5fb",
       "src": "https://github.com/akinsho/toggleterm.nvim"
+    },
+    "trouble.nvim": {
+      "rev": "bd67efe408d4816e25e8491cc5ad4088e708a69a",
+      "src": "https://github.com/folke/trouble.nvim"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
