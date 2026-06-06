@@ -18,7 +18,7 @@ function M.setup()
             config = { border = "rounded" },
         },
         lsp_progress = {
-            enable = true,
+            enable = false,
             level = "INFO",
             duration_last = 1000,
         },

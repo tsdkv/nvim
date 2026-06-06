@@ -1,5 +1,17 @@
 local M = {}
 
+local function lsp_clients()
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    if #clients == 0 then
+        return "No Active LSP"
+    end
+    local names = {}
+    for _, client in ipairs(clients) do
+        table.insert(names, client.name)
+    end
+    return "  " .. table.concat(names, ", ")
+end
+
 M.setup = function()
     local custom_nord = require("lualine.themes.nord")
     local c = require("nord.palette")
@@ -61,7 +73,10 @@ M.setup = function()
                 },
             },
             lualine_x = {
-                "lsp_status",
+                {
+                    lsp_clients,
+                    color = { fg = c.nord4, gui = "bold" },
+                },
                 {
                     "diagnostics",
                     symbols = { error = " ", warn = " ", info = " ", hint = "󰌵 " },
@@ -70,7 +85,7 @@ M.setup = function()
             lualine_y = { "searchcount", "progress" },
             lualine_z = { "location" },
         },
-        extensions = { "neo-tree", "mason", "quickfix" },
+        extensions = { "neo-tree", "mason", "quickfix", "trouble" },
     })
 end
 

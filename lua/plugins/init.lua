@@ -59,6 +59,8 @@ load.now(function()
         gh("nvim-telescope/telescope-fzf-native.nvim"),
         gh("nvim-telescope/telescope-ui-select.nvim"),
 
+        gh("j-hui/fidget.nvim"),
+
         gh("m4xshen/hardtime.nvim"),
 
         gh("tomasky/bookmarks.nvim"),
@@ -108,6 +110,7 @@ load.later("plugins.arrow")
 load.later("plugins.flash")
 load.later("plugins.toggleterm")
 load.later("plugins.lualine")
+load.later("plugins.fidget")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
