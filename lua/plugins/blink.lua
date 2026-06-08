@@ -5,6 +5,7 @@ function M.setup()
         keymap = {
             preset = "default",
             ["<CR>"] = { "fallback" }, -- Ensure Enter always inserts a newline
+            ["<A-y>"] = require("minuet").make_blink_map(),
         },
 
         appearance = {
@@ -13,6 +14,7 @@ function M.setup()
         },
 
         completion = {
+            trigger = { prefetch_on_insert = false }, -- Recommended for minuet-ai
             documentation = {
                 auto_show = true,
                 auto_show_delay_ms = 500,
@@ -43,7 +45,7 @@ function M.setup()
         },
 
         sources = {
-            default = { "lsp", "path", "snippets", "buffer" },
+            default = { "lsp", "path", "snippets", "buffer", "minuet" },
 
             -- lazydev: Neovim API completions with type info for Lua files
             per_filetype = {
@@ -54,6 +56,13 @@ function M.setup()
                     name = "LazyDev",
                     module = "lazydev.integrations.blink",
                     score_offset = 100, -- prioritise lazydev over LSP for Lua
+                },
+                minuet = {
+                    name = "minuet",
+                    module = "minuet.blink",
+                    async = true,
+                    timeout_ms = 3000,
+                    score_offset = 50, -- Gives minuet higher priority among suggestions
                 },
             },
         },

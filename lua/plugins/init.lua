@@ -83,6 +83,8 @@ load.now(function()
 
         { src = gh("nvim-mini/mini.notify"), version = "stable" },
         { src = gh("nvim-mini/mini.pairs"), version = "stable" },
+
+        gh("milanglacier/minuet-ai.nvim"),
     })
 end, "main vim.pack.add")
 
@@ -111,6 +113,7 @@ load.later("plugins.flash")
 load.later("plugins.toggleterm")
 load.later("plugins.lualine")
 load.later("plugins.fidget")
+load.later("plugins.minuet")
 
 -- Filetype-driven
 load.on_filetype("lua", "lazydev")
