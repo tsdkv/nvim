@@ -5,7 +5,7 @@ function M.setup()
         keymap = {
             preset = "default",
             ["<CR>"] = { "fallback" }, -- Ensure Enter always inserts a newline
-            ["<A-y>"] = require("minuet").make_blink_map(),
+            ["<C-g>"] = require("minuet").make_blink_map(),
         },
 
         appearance = {
