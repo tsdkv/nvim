@@ -49,6 +49,21 @@ M.keymap = {
         end,
         desc = "Preview hunk (inline)",
     },
+    {
+        "<leader>gr",
+        function()
+            require("gitsigns").reset_hunk()
+        end,
+        desc = "Reset hunk",
+    },
+    {
+        "ih",
+        function()
+            require("gitsigns").select_hunk()
+        end,
+        mode = { "o", "x" },
+        desc = "Select hunk",
+    },
 }
 
 M.setup = function()
@@ -97,6 +112,7 @@ M.setup = function()
         max_file_length = 40000, -- Disable if file is longer than this (in lines)
         preview_config = {
             -- Options passed to nvim_open_win
+            border = "rounded",
             style = "minimal",
             relative = "cursor",
             row = 0,
