@@ -45,7 +45,7 @@ function M.setup()
         },
 
         sources = {
-            default = { "lsp", "path", "snippets", "buffer", "minuet" },
+            default = { "lsp", "path", "snippets", "buffer" },
 
             -- lazydev: Neovim API completions with type info for Lua files
             per_filetype = {
@@ -68,7 +68,7 @@ function M.setup()
         },
 
         -- Use built-in vim.snippet engine — loads friendly-snippets automatically
-        snippets = { preset = "default" },
+        snippets = { preset = "luasnip" },
 
         -- Signature help: shows function signature when typing arguments
         -- Triggers on ( and , — toggle manually with C-k

@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "LuaSnip": {
+      "rev": "0abc8f390b278c3b4aabc4c004ac8a088b65cf24",
+      "src": "https://github.com/L3MON4D3/LuaSnip"
+    },
     "arrow.nvim": {
       "rev": "6e0f726f55f99332dd726a53effd6813786b6d49",
       "src": "https://github.com/otavioschwanck/arrow.nvim"
@@ -32,6 +36,10 @@
     "gitsigns.nvim": {
       "rev": "25050e4ed39e628282831d4cbecb1850454ce915",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
+    "go-postfix.nvim": {
+      "rev": "1699ff58d18d88913348683eade65d03601e6155",
+      "src": "https://github.com/tsdkv/go-postfix.nvim"
     },
     "hardtime.nvim": {
       "rev": "b4e431934af1fe224a3a801f632c008278cb7628",
