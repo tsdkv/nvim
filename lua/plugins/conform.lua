@@ -17,6 +17,7 @@ function M.setup()
             -- Run goimports first (fixes imports), then gofumpt (stricter formatting)
             go = { "goimports", "gofumpt" },
             lua = { "stylua" },
+            rust = { "rustfmt" },
 
             -- Common config/data formats
             json = { "prettier", stop_after_first = true },

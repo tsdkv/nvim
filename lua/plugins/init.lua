@@ -87,6 +87,8 @@ load.now(function()
         gh("milanglacier/minuet-ai.nvim"),
         gh("L3MON4D3/LuaSnip"),
         gh("tsdkv/go-postfix.nvim"),
+
+        gh("saecki/crates.nvim"),
     })
 end, "main vim.pack.add")
 
@@ -125,3 +127,4 @@ load.on_filetype("lua", "lazydev")
 -- it auto-discovers server modules under plugins/lsp/servers/ and
 -- arranges its own FileType-driven lazy setup for each.
 load.on_event({ "BufReadPre", "BufNewFile" }, "plugins.lsp")
+load.on_event({ "BufRead", "BufNewFile" }, "plugins.crates", "Cargo.toml")

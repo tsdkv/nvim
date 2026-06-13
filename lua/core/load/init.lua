@@ -101,7 +101,7 @@ H.resolved_cache = {}
 -- Invalid type: notifies with ERROR and returns a no-op to prevent crashes.
 local function resolve(target, label)
     local key = label or get_target_key(target)
-    
+
     if H.resolved_cache[key] then
         return H.resolved_cache[key]
     end
