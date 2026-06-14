@@ -86,7 +86,6 @@ load.now(function()
 
         gh("milanglacier/minuet-ai.nvim"),
         gh("L3MON4D3/LuaSnip"),
-        gh("tsdkv/go-postfix.nvim"),
 
         gh("saecki/crates.nvim"),
     })
