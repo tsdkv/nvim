@@ -83,6 +83,7 @@ load.now(function()
 
         { src = gh("nvim-mini/mini.notify"), version = "stable" },
         { src = gh("nvim-mini/mini.pairs"), version = "stable" },
+        { src = gh("nvim-mini/mini.surround"), version = "stable" },
 
         gh("milanglacier/minuet-ai.nvim"),
         gh("L3MON4D3/LuaSnip"),
