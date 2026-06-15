@@ -41,23 +41,10 @@ local function go_modify_tags(clear)
     local offset = vim.fn.line2byte(row) + col
 
     if clear then
-        vim.system({ "gomodifytags", "-file", fname, "-offset", tostring(offset), "-clear-tags", "-w" }, { text = true }, function(obj)
-            vim.schedule(function()
-                if obj.code == 0 then
-                    vim.cmd("checktime")
-                else
-                    vim.notify("gomodifytags failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
-                end
-            end)
-        end)
-        return
-    end
-
-    vim.ui.input({ prompt = "Add tags (e.g. json,yaml): ", default = "json" }, function(tags)
-        if not tags or tags == "" then return end
-        vim.ui.select({ "snakecase", "camelcase", "lispcase", "pascalcase", "keep" }, { prompt = "Transform: " }, function(transform)
-            if not transform then return end
-            vim.system({ "gomodifytags", "-file", fname, "-offset", tostring(offset), "-add-tags", tags, "-transform", transform, "-w" }, { text = true }, function(obj)
+        vim.system(
+            { "gomodifytags", "-file", fname, "-offset", tostring(offset), "-clear-tags", "-w" },
+            { text = true },
+            function(obj)
                 vim.schedule(function()
                     if obj.code == 0 then
                         vim.cmd("checktime")
@@ -65,8 +52,48 @@ local function go_modify_tags(clear)
                         vim.notify("gomodifytags failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
                     end
                 end)
-            end)
-        end)
+            end
+        )
+        return
+    end
+
+    vim.ui.input({ prompt = "Add tags (e.g. json,yaml): ", default = "json" }, function(tags)
+        if not tags or tags == "" then
+            return
+        end
+        vim.ui.select(
+            { "snakecase", "camelcase", "lispcase", "pascalcase", "keep" },
+            { prompt = "Transform: " },
+            function(transform)
+                if not transform then
+                    return
+                end
+                vim.system(
+                    {
+                        "gomodifytags",
+                        "-file",
+                        fname,
+                        "-offset",
+                        tostring(offset),
+                        "-add-tags",
+                        tags,
+                        "-transform",
+                        transform,
+                        "-w",
+                    },
+                    { text = true },
+                    function(obj)
+                        vim.schedule(function()
+                            if obj.code == 0 then
+                                vim.cmd("checktime")
+                            else
+                                vim.notify("gomodifytags failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
+                            end
+                        end)
+                    end
+                )
+            end
+        )
     end)
 end
 
@@ -163,8 +190,20 @@ return {
             { "<leader>lge", iferr, desc = "iferr: generate error block" },
             { "<leader>lgi", go_impl, desc = "Generate interface stubs (impl)" },
             { "<leader>lgs", toggle_staticcheck, desc = "Toggle staticcheck" },
-            { "<leader>lgt", function() go_modify_tags(false) end, desc = "Add Struct Tags" },
-            { "<leader>lgT", function() go_modify_tags(true) end, desc = "Clear Struct Tags" },
+            {
+                "<leader>lgt",
+                function()
+                    go_modify_tags(false)
+                end,
+                desc = "Add Struct Tags",
+            },
+            {
+                "<leader>lgT",
+                function()
+                    go_modify_tags(true)
+                end,
+                desc = "Clear Struct Tags",
+            },
         }, { buffer = bufnr })
     end,
 }

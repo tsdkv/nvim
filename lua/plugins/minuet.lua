@@ -28,7 +28,7 @@ M.setup = function()
         notify = "debug",
         request_timeout = 3,
         blink = {
-            -- Controls if AI triggers automatically as you type. 
+            -- Controls if AI triggers automatically as you type.
             -- `true` by default. You can toggle this on the fly with `<leader>at`.
             enable_auto_complete = true,
         },

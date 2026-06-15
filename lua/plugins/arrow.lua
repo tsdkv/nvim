@@ -16,8 +16,6 @@ M.setup = function()
             border = "rounded",
         },
     })
-
-
 end
 
 return M
