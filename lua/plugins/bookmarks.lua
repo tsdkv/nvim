@@ -2,49 +2,49 @@ local M = {}
 
 M.keymap = {
     {
-        "mm",
+        "<leader>bb",
         function()
             require("bookmarks").bookmark_toggle()
         end,
         desc = "Toggle Bookmark",
     },
     {
-        "mi",
+        "<leader>bi",
         function()
             require("bookmarks").bookmark_ann()
         end,
         desc = "Add/Edit Annotation",
     },
     {
-        "mc",
+        "<leader>bc",
         function()
             require("bookmarks").bookmark_clean()
         end,
         desc = "Clean Buffer Bookmarks",
     },
     {
-        "mn",
+        "<leader>bn",
         function()
             require("bookmarks").bookmark_next()
         end,
         desc = "Next Bookmark",
     },
     {
-        "mp",
+        "<leader>bp",
         function()
             require("bookmarks").bookmark_prev()
         end,
         desc = "Prev Bookmark",
     },
     {
-        "ml",
+        "<leader>bl",
         function()
             require("bookmarks").bookmark_list()
         end,
         desc = "List Bookmarks (Quickfix)",
     },
     {
-        "mx",
+        "<leader>bx",
         function()
             require("bookmarks").bookmark_clear_all()
         end,
