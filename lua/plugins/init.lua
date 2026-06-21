@@ -38,7 +38,6 @@ load.now(function()
 
         gh("folke/lazydev.nvim"),
         gh("folke/which-key.nvim"),
-        gh("folke/zen-mode.nvim"),
         gh("folke/todo-comments.nvim"),
         gh("folke/flash.nvim"),
         gh("folke/persistence.nvim"),
