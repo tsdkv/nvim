@@ -54,7 +54,7 @@ load.now(function()
 
         gh("nvim-lualine/lualine.nvim"),
 
-        gh("otavioschwanck/arrow.nvim"),
+        gh("tsdkv/quickbuf.nvim"),
 
         gh("nvim-telescope/telescope.nvim"),
         gh("nvim-telescope/telescope-fzf-native.nvim"),
@@ -86,7 +86,6 @@ load.now(function()
         { src = gh("nvim-mini/mini.pairs"), version = "stable" },
         { src = gh("nvim-mini/mini.surround"), version = "stable" },
 
-        gh("milanglacier/minuet-ai.nvim"),
         gh("L3MON4D3/LuaSnip"),
 
         gh("saecki/crates.nvim"),
@@ -110,16 +109,14 @@ load.later("hardtime")
 load.later("plugins.bookmarks")
 load.later("plugins.neoscroll")
 load.later("plugins.telescope")
-load.later("plugins.zen-mode")
 load.later("plugins.todo-comments")
 load.later("plugins.trouble")
-load.later("plugins.arrow")
+load.later("plugins.quickbuf")
 load.later("plugins.flash")
 load.later("plugins.substitute")
 load.later("plugins.toggleterm")
 load.later("plugins.lualine")
 load.later("plugins.fidget")
-load.later("plugins.minuet")
 load.later("plugins.luasnip")
 
 -- Filetype-driven
