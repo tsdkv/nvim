@@ -1,4 +1,5 @@
 local load = require("core.load")
+local restart_lsp = require("core.utils").restart_lsp
 
 local M = {}
 
@@ -105,13 +106,11 @@ local function keymaps(bufnr)
         {
             "<leader>lR",
             function()
-                for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-                    client:stop()
-                end
-                vim.defer_fn(function()
-                    vim.cmd("edit")
-                end, 200)
-                vim.notify("LSP restarting...", vim.log.levels.INFO)
+                restart_lsp(vim.lsp.get_clients({ bufnr = bufnr }), {
+                    on_restart = function()
+                        vim.cmd("edit")
+                    end,
+                })
             end,
             desc = "Restart LSP",
         },

@@ -3,6 +3,7 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.wrap = true
 vim.o.undofile = true
+vim.o.sessionoptions = "buffers,curdir,tabpages,winsize,help,globals,skiprtp,folds"
 
 vim.schedule(function()
     vim.o.clipboard = "unnamedplus"

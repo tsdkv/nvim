@@ -1,3 +1,5 @@
+local restart_lsp = require("core.utils").restart_lsp
+
 -- Yank highlight
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
@@ -64,17 +66,9 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
             local branch = vim.trim(obj.stdout)
             vim.schedule(function()
                 if last_branch and branch ~= last_branch then
-                    for _, client in ipairs(vim.lsp.get_clients()) do
-                        client:stop()
-                        vim.defer_fn(function()
-                            vim.lsp.start(client.config, {
-                                reuse_client = function()
-                                    return false
-                                end,
-                            })
-                        end, 200)
-                    end
-                    vim.notify("Branch → " .. branch .. " (LSP restarting)", vim.log.levels.INFO)
+                    restart_lsp(vim.lsp.get_clients(), {
+                        message = "Branch → " .. branch .. " (LSP restarting)",
+                    })
                 end
                 last_branch = branch
             end)

@@ -12,4 +12,29 @@ M.check_type = function(name, val, ref, allow_nil)
     error(string.format("`%s` should be %s, not %s", name, ref, type(val)))
 end
 
+M.restart_lsp = function(clients, opts)
+    opts = opts or {}
+
+    for _, client in ipairs(clients) do
+        client:stop()
+    end
+
+    vim.defer_fn(function()
+        if opts.on_restart then
+            opts.on_restart()
+            return
+        end
+
+        for _, client in ipairs(clients) do
+            vim.lsp.start(client.config, {
+                reuse_client = function()
+                    return false
+                end,
+            })
+        end
+    end, 200)
+
+    vim.notify(opts.message or "LSP restarting...", vim.log.levels.INFO)
+end
+
 return M
