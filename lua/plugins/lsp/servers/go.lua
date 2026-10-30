@@ -135,6 +135,9 @@ return {
             cmd = { "gopls" },
             filetypes = { "go", "gomod", "gowork", "gotmpl" },
             root_markers = { "go.work", "go.mod", ".git" },
+            -- Send didChange notifications to gopls at most every 300ms
+            -- instead of the default 150ms (halves LSP traffic while typing).
+            flags = { debounce_text_changes = 300 },
             settings = {
                 gopls = {
                     -- Use gofumpt (stricter, opinionated formatter) instead of standard gofmt.
@@ -145,6 +148,9 @@ return {
                     completeUnimported = true,
                     -- Show function parameter placeholders when autocompleting functions.
                     usePlaceholders = true,
+                    -- Treesitter already highlights Go; gopls semantic tokens are a
+                    -- redundant full-file LSP round-trip on every edit.
+                    semanticTokens = false,
 
                     -- Background diagnostic rules run by gopls
                     analyses = {
@@ -167,8 +173,8 @@ return {
                         rangeVariableTypes = true, -- Show types of variables defined in range loops.
                     },
 
-                    -- Directory filters (optional): ignore folders you don't want gopls to index (saves CPU/memory)
-                    -- directoryFilters = { "-**/node_modules", "-**/.git", "-**/.venv" },
+                    -- Don't index/watch these folders (saves CPU and memory).
+                    directoryFilters = { "-**/node_modules", "-**/.git", "-**/.venv" },
 
                     -- Background vulnerability scanning (shows alerts for vulnerable packages in your imports)
                     vulncheck = "Imports",
