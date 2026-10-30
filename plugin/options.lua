@@ -33,6 +33,16 @@ vim.o.mouse = "a" -- mouse in all modes
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 
+-- Disable unused built-in plugins so they are never sourced
+vim.g.loaded_gzip = 1
+vim.g.loaded_tarPlugin = 1
+vim.g.loaded_zipPlugin = 1
+vim.g.loaded_2html_plugin = 1
+vim.g.loaded_tutor = 1
+-- netrw is replaced by neo-tree (hijack_netrw_behavior = "open_current")
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Enable and configure experimental ui2 (Neovim 0.12+)
 if vim._core and vim._core.ui2 then
     require("vim._core.ui2").enable({
