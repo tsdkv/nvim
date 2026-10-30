@@ -159,7 +159,6 @@ return {
                         unusedwrite = true, -- Warn about unused writes (variables written to but never read).
                         unusedvariable = true, -- Warn about unused variables.
                         useany = true, -- Recommend replacing interface{} with any.
-                        shadow = true, -- Warn when a variable shadows another variable in an outer scope.
                     },
 
                     -- Inlay hints (inline virtual text showing types and parameter names in editor)
@@ -175,9 +174,6 @@ return {
 
                     -- Don't index/watch these folders (saves CPU and memory).
                     directoryFilters = { "-**/node_modules", "-**/.git", "-**/.venv" },
-
-                    -- Background vulnerability scanning (shows alerts for vulnerable packages in your imports)
-                    vulncheck = "Imports",
 
                 },
             },
