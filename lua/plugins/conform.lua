@@ -29,6 +29,20 @@ function M.setup()
             ["_"] = { "trim_whitespace" },
         },
 
+        formatters = {
+            goimports = {
+                -- Group this module's imports after third-party ones,
+                -- mirroring gopls' "local" setting. Resolved from the file
+                -- being formatted, not the current buffer (async format may
+                -- run after a buffer switch).
+                prepend_args = function(_, ctx)
+                    local util = require("plugins.lsp.servers.go.util")
+                    local mod = util.module_path(ctx.dirname or vim.fs.dirname(ctx.filename))
+                    return mod and { "-local", mod } or {}
+                end,
+            },
+        },
+
         -- Format on save; lsp_format = "fallback" means: use LSP only when no
         -- conform formatter is configured for the filetype (e.g. for unknown types).
         format_on_save = function(bufnr)

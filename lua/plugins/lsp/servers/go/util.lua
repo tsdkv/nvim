@@ -1,9 +1,10 @@
 local M = {}
 
--- Read the module path from the nearest go.mod so gopls can group this
--- module's imports separately from third-party ones ("local" setting).
-function M.module_path()
-    local gomod = vim.fs.find("go.mod", { upward = true, path = vim.fn.expand("%:p:h") })[1]
+-- Read the module path from the nearest go.mod so gopls and goimports can
+-- group this module's imports separately from third-party ones.
+-- start: directory to search upward from (defaults to the current buffer's).
+function M.module_path(start)
+    local gomod = vim.fs.find("go.mod", { upward = true, path = start or vim.fn.expand("%:p:h") })[1]
     if not gomod then
         return nil
     end
