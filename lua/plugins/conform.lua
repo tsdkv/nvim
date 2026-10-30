@@ -32,7 +32,7 @@ function M.setup()
         -- Format on save; lsp_format = "fallback" means: use LSP only when no
         -- conform formatter is configured for the filetype (e.g. for unknown types).
         format_on_save = {
-            timeout_ms = 500,
+            timeout_ms = 2000,
             lsp_format = "fallback",
         },
 
