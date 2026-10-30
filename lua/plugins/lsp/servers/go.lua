@@ -135,6 +135,7 @@ local function gc_details()
         return
     end
     client:exec_cmd({
+        title = "Toggle GC details",
         command = "gopls.gc_details",
         arguments = { vim.uri_from_bufnr(0) },
     }, { bufnr = 0 })
