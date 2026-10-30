@@ -151,6 +151,10 @@ return {
                     -- Treesitter already highlights Go; gopls semantic tokens are a
                     -- redundant full-file LSP round-trip on every edit.
                     semanticTokens = false,
+                    -- Recompute diagnostics only when saving a file instead of
+                    -- continuously while typing (biggest gopls CPU win,
+                    -- especially during branch switches).
+                    diagnosticsTrigger = "Save",
 
                     -- Background diagnostic rules run by gopls
                     analyses = {
