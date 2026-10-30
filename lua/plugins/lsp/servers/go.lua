@@ -19,8 +19,11 @@ local function go_impl()
             if not interface or interface == "" then
                 return
             end
+            -- Run in the current file's directory: impl resolves the receiver
+            -- type from the package in its working directory
+            local cwd = vim.fn.expand("%:p:h")
             -- Table-form bypasses the shell, eliminating quoting/injection issues
-            vim.system({ "impl", receiver, interface }, { text = true }, function(obj)
+            vim.system({ "impl", receiver, interface }, { text = true, cwd = cwd }, function(obj)
                 vim.schedule(function()
                     if obj.code ~= 0 then
                         vim.notify("impl failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
