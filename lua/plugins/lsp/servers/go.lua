@@ -173,15 +173,6 @@ return {
                     -- Background vulnerability scanning (shows alerts for vulnerable packages in your imports)
                     vulncheck = "Imports",
 
-                    -- Code lenses for inline actions (run tests, generate, toggle gc details)
-                    codelenses = {
-                        generate = true,
-                        gc_details = true,
-                        test = false, -- disabled per your request
-                        tidy = true,
-                        vendor = true,
-                        upgrade_dependency = true,
-                    },
                 },
             },
         })
