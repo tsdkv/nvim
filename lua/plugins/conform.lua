@@ -31,10 +31,21 @@ function M.setup()
 
         -- Format on save; lsp_format = "fallback" means: use LSP only when no
         -- conform formatter is configured for the filetype (e.g. for unknown types).
-        format_on_save = {
-            timeout_ms = 2000,
-            lsp_format = "fallback",
-        },
+        format_on_save = function(bufnr)
+            -- Go formats asynchronously AFTER save instead: goimports' import
+            -- resolution can exceed any sync timeout on a cold cache, and
+            -- saving must never block.
+            if vim.bo[bufnr].filetype == "go" then
+                return
+            end
+            return { timeout_ms = 2000, lsp_format = "fallback" }
+        end,
+        format_after_save = function(bufnr)
+            if vim.bo[bufnr].filetype ~= "go" then
+                return
+            end
+            return { lsp_format = "fallback" }
+        end,
 
         -- Only notify on actual errors, not when no formatter is found
         notify_on_error = true,
