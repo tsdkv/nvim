@@ -105,11 +105,7 @@ local function keymaps(bufnr)
         {
             "<leader>lR",
             function()
-                restart_lsp(vim.lsp.get_clients({ bufnr = bufnr }), {
-                    on_restart = function()
-                        vim.cmd("edit")
-                    end,
-                })
+                restart_lsp(vim.lsp.get_clients({ bufnr = bufnr }))
             end,
             desc = "Restart LSP",
         },
