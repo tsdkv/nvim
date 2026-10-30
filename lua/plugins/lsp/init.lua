@@ -1,13 +1,8 @@
 local M = {}
 
-local function discover_servers()
-    local servers = {}
-    for _, path in ipairs(vim.api.nvim_get_runtime_file("lua/plugins/lsp/servers/*.lua", true)) do
-        local mod_name = vim.fn.fnamemodify(path, ":t:r")
-        servers[mod_name] = require("plugins.lsp.servers." .. mod_name)
-    end
-    return servers
-end
+-- LSP servers, one module name per entry under servers/. Comment a line
+-- out to disable that server entirely.
+local server_modules = { "go", "lua", "rust" }
 
 local check_type = require("core.utils").check_type
 local function check_server_config(config)
@@ -39,11 +34,11 @@ function M.setup()
         float = { border = "rounded", source = true, header = "", prefix = "" },
     })
 
-    local servers = discover_servers()
     local tools = {}
     local handlers = {}
 
-    for _, mod in pairs(servers) do
+    for _, name in ipairs(server_modules) do
+        local mod = require("plugins.lsp.servers." .. name)
         check_server_config(mod)
 
         vim.list_extend(tools, mod.tools or {})
