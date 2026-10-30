@@ -44,6 +44,12 @@ function M.get()
                 unusedwrite = true, -- Warn about unused writes (variables written to but never read).
                 unusedvariable = true, -- Warn about unused variables.
                 useany = true, -- Recommend replacing interface{} with any.
+                -- Doc-comment style rules: don't demand "Package x ..." package
+                -- docs or exported-symbol comments starting with the symbol name.
+                ST1000 = false, -- package comment should be of the form "Package x ..."
+                ST1020 = false, -- comment on exported function should start with its name
+                ST1021 = false, -- comment on exported type should start with its name
+                ST1022 = false, -- comment on exported var/const should start with its name
             },
 
             -- Inlay hints (inline virtual text showing types and parameter names in editor)
