@@ -126,6 +126,20 @@ local function toggle_staticcheck()
     vim.notify("gopls staticcheck: " .. (new_val and "ON" or "OFF"), vim.log.levels.INFO)
 end
 
+-- Toggle compiler optimization details (inline/escape analysis annotations)
+-- for the current package. Sent again, the command turns them off.
+local function gc_details()
+    local client = vim.lsp.get_clients({ name = "gopls", bufnr = 0 })[1]
+    if not client then
+        vim.notify("gopls not attached to this buffer", vim.log.levels.WARN)
+        return
+    end
+    client:exec_cmd({
+        command = "gopls.gc_details",
+        arguments = { vim.uri_from_bufnr(0) },
+    }, { bufnr = 0 })
+end
+
 -- Read the module path from the nearest go.mod so gopls can group this
 -- module's imports separately from third-party ones ("local" setting).
 local function module_path()
@@ -209,6 +223,7 @@ return {
             { "<leader>lge", iferr, desc = "iferr: generate error block" },
             { "<leader>lgi", go_impl, desc = "Generate interface stubs (impl)" },
             { "<leader>lgs", toggle_staticcheck, desc = "Toggle staticcheck" },
+            { "<leader>lgc", gc_details, desc = "Toggle gc details (escape/inline analysis)" },
             {
                 "<leader>lgt",
                 function()
