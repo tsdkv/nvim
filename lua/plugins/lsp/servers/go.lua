@@ -187,6 +187,19 @@ return {
                     -- especially during branch switches).
                     diagnosticsTrigger = "Save",
 
+                    -- Editor-side codelens support is removed; pin every lens
+                    -- off explicitly instead of relying on gopls defaults.
+                    codelenses = {
+                        generate = false,
+                        regenerate_cgo = false,
+                        test = false,
+                        tidy = false,
+                        upgrade_dependency = false,
+                        vendor = false,
+                        gc_details = false, -- the lens; the <leader>lgc command is unaffected
+                        run_govulncheck = false,
+                    },
+
                     -- Background diagnostic rules run by gopls
                     analyses = {
                         nilness = true, -- Warn about potential nil pointer dereferences.
