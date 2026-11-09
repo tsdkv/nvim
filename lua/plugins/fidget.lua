@@ -1,5 +1,6 @@
 local M = {}
 
+-- Show LSP progress and status messages in a small notification window.
 M.setup = function()
     require("fidget").setup({
         progress = {
