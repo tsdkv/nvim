@@ -4,7 +4,7 @@ M.keymap = {
     { "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Toggle Horizontal Terminal" },
     { "<leader>to", "<cmd>ToggleTerm direction=float<cr>", desc = "Toggle Floating Terminal" },
     { "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", desc = "Toggle Vertical Terminal" },
-    { "<Esc><Esc>", "<C-\\><C-n>", desc = "Exit terminal mode", mode = "t" },
+    { "<C-]>", "<C-\\><C-n>", desc = "Exit terminal mode", mode = "t" },
     { "<C-h>", "<Cmd>wincmd h<CR>", desc = "Move focus left", mode = "t" },
     { "<C-j>", "<Cmd>wincmd j<CR>", desc = "Move focus down", mode = "t" },
     { "<C-k>", "<Cmd>wincmd k<CR>", desc = "Move focus up", mode = "t" },
