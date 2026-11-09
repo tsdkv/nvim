@@ -4,6 +4,7 @@ vim.keymap.set("n", "<leader>W", "<cmd>noautocmd w<cr>", { desc = "Save without 
 vim.keymap.set("n", "<leader>qq", "<cmd>q<cr>", { desc = "Quit Neovim" })
 vim.keymap.set("v", "<", "<gv", { desc = "Indent Left (Keep Selection)" })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent Right (Keep Selection)" })
+vim.keymap.set("i", "<Tab>", "<Tab>", { desc = "Insert Tab" })
 
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
