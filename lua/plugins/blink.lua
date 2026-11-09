@@ -1,5 +1,6 @@
 local M = {}
 
+-- Autocomplete plugin
 function M.setup()
     require("blink.cmp").setup({
         keymap = {
