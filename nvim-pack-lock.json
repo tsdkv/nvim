@@ -38,7 +38,7 @@
       "src": "https://github.com/rafamadriz/friendly-snippets"
     },
     "gitsigns.nvim": {
-      "rev": "ef707fb93301a9b856f36eae4c8f56f5b988a794",
+      "rev": "dc7698f932792a764d3db95fedee26c38e728355",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "hardtime.nvim": {
@@ -94,7 +94,7 @@
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-treesitter": {
-      "rev": "19bdfc04f40ed2ccb3340591d125f759b0406875",
+      "rev": "60c0f468de3e636fa660a419d537e8033aca4e39",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-textobjects": {
@@ -112,6 +112,15 @@
     "plenary.nvim": {
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
       "src": "https://github.com/nvim-lua/plenary.nvim"
+    },
+    "smart-splits-backend-rex": {
+      "rev": "68f54325975ad47b03a968a3f201081bfadc0ff5",
+      "src": "https://github.com/rawnly/smart-splits-backend-rex"
+    },
+    "smart-splits.nvim": {
+      "rev": "5fd4fe53c2df2009e689f61511e3c474a9eccbaf",
+      "src": "https://github.com/smart-splits-nvim/smart-splits.nvim",
+      "version": "3.0.0 - 4.0.0"
     },
     "substitute.nvim": {
       "rev": "0d2077398552f069abccbd964a26dd7cd26882cd",

@@ -34,7 +34,7 @@ M.setup = function()
         shell = vim.o.shell,
         float_opts = {
             border = "rounded",
-            winblend = 10,
+            winblend = 0,
         },
     })
 end

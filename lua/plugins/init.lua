@@ -43,6 +43,9 @@ load.now(function()
         gh("folke/persistence.nvim"),
         gh("folke/trouble.nvim"),
 
+        { src = gh("smart-splits-nvim/smart-splits.nvim"), version = vim.version.range("^3.0.0") },
+        gh("rawnly/smart-splits-backend-rex"),
+
         gh("gbprod/substitute.nvim"),
 
         gh("mason-org/mason.nvim"),
@@ -114,6 +117,7 @@ load.later("plugins.trouble")
 load.later("plugins.flash")
 load.later("plugins.substitute")
 load.later("plugins.toggleterm")
+load.later("plugins.smart-splits")
 load.later("plugins.lualine")
 load.later("plugins.fidget")
 load.later("plugins.luasnip")
