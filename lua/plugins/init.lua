@@ -49,6 +49,7 @@ load.now(function()
         gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
 
         gh("lewis6991/gitsigns.nvim"),
+        gh("sindrets/diffview.nvim"),
         gh("karb94/neoscroll.nvim"),
         gh("akinsho/toggleterm.nvim"),
 
@@ -102,6 +103,7 @@ load.later("plugins.mini")
 load.later("plugins.blink")
 load.later("plugins.conform")
 load.later("plugins.git")
+load.later("plugins.diffview")
 load.later("mason")
 load.later("hardtime")
 load.later("plugins.bookmarks")

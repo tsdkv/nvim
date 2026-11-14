@@ -25,6 +25,38 @@ function M.setup()
             -- Bookmarks
             hl.BookMarksAdd = { fg = c.frost, bg = c.none }
             hl.BookMarksAnn = { fg = c.frost, bg = c.none }
+
+            -- Diffview
+            hl.DiffviewDim1 = { link = "Comment" }
+            hl.DiffviewPrimary = { fg = c.keyword }
+            hl.DiffviewSecondary = { fg = c.green }
+            hl.DiffviewNormal = { fg = c.fg, bg = c.bg }
+            hl.DiffviewWinSeparator = { fg = c.bg, bg = c.bg }
+            hl.DiffviewFilePanelTitle = { fg = c.keyword, bold = true }
+            hl.DiffviewFilePanelCounter = { fg = c.fg }
+            hl.DiffviewFilePanelRootPath = { fg = c.purple, bold = true }
+            hl.DiffviewFilePanelFileName = { fg = c.fg }
+            hl.DiffviewFilePanelSelected = { fg = c.yellow }
+            hl.DiffviewFilePanelPath = { link = "Comment" }
+            hl.DiffviewFilePanelInsertions = { fg = c.green, bg = c.none }
+            hl.DiffviewFilePanelDeletions = { fg = c.error, bg = c.none }
+            hl.DiffviewFilePanelConflicts = { fg = c.yellow, bg = c.none }
+            hl.DiffviewFolderName = { fg = c.keyword, bold = true }
+            hl.DiffviewFolderSign = { fg = c.keyword }
+            hl.DiffviewHash = { fg = c.orange }
+            hl.DiffviewReference = { fg = c.keyword, bold = true }
+            hl.DiffviewReflogSelector = { fg = c.purple }
+            hl.DiffviewStatusAdded = { fg = c.green, bg = c.none }
+            hl.DiffviewStatusUntracked = { fg = c.green, bg = c.none }
+            hl.DiffviewStatusModified = { fg = c.yellow, bg = c.none }
+            hl.DiffviewStatusRenamed = { fg = c.yellow, bg = c.none }
+            hl.DiffviewStatusCopied = { fg = c.yellow, bg = c.none }
+            hl.DiffviewStatusTypeChange = { fg = c.yellow, bg = c.none }
+            hl.DiffviewStatusUnmerged = { fg = c.yellow, bg = c.none }
+            hl.DiffviewStatusUnknown = { fg = c.error, bg = c.none }
+            hl.DiffviewStatusDeleted = { fg = c.error, bg = c.none }
+            hl.DiffviewStatusBroken = { fg = c.error, bg = c.none }
+            hl.DiffviewStatusIgnored = { fg = c.comment, bg = c.none }
         end,
     })
 
