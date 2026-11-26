@@ -28,7 +28,7 @@ This configuration leverages Neovim 0.12's native `vim.pack` functionality combi
 
 ## LSP workspaces
 
-Start Neovim in a service directory inside a Go module to focus gopls diagnostics on that directory. Start at the `go.mod` or `go.work` root for the full workspace. Neovim remembers the launch directory across `:cd` and session restores. Files outside it, including those in another worktree, use normal root detection. Nested Go modules also use normal root detection.
+Go LSP setup uses the current working directory when you first open a Go file. Use `:cd` to select a service directory before opening that file to focus diagnostics there, or select the `go.mod` or `go.work` root for the full workspace. Later directory changes keep the selected root. Files outside it and files in nested Go modules use normal root detection.
 
 In a Go buffer, `<leader>lgs` switches its gopls client from the default Staticcheck subset to full checks, then toggles full checks off or on.
 
