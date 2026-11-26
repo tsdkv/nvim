@@ -75,30 +75,26 @@ function M.modify_tags(clear)
                 if not transform then
                     return
                 end
-                vim.system(
-                    {
-                        "gomodifytags",
-                        "-file",
-                        fname,
-                        "-offset",
-                        tostring(offset),
-                        "-add-tags",
-                        tags,
-                        "-transform",
-                        transform,
-                        "-w",
-                    },
-                    { text = true },
-                    function(obj)
-                        vim.schedule(function()
-                            if obj.code == 0 then
-                                vim.cmd("checktime")
-                            else
-                                vim.notify("gomodifytags failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
-                            end
-                        end)
-                    end
-                )
+                vim.system({
+                    "gomodifytags",
+                    "-file",
+                    fname,
+                    "-offset",
+                    tostring(offset),
+                    "-add-tags",
+                    tags,
+                    "-transform",
+                    transform,
+                    "-w",
+                }, { text = true }, function(obj)
+                    vim.schedule(function()
+                        if obj.code == 0 then
+                            vim.cmd("checktime")
+                        else
+                            vim.notify("gomodifytags failed: " .. (obj.stderr or ""), vim.log.levels.ERROR)
+                        end
+                    end)
+                end)
             end
         )
     end)
