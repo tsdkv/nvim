@@ -5,66 +5,15 @@ H.augroup = function(name)
     return vim.api.nvim_create_augroup(name, { clear = true })
 end
 
--- Generates a clean, unique and stable string key for any target type
-local function get_target_key(target)
-    if type(target) == "string" then
-        return target
-    end
-
-    -- Extract file and line number for anonymous functions
-    local info = debug.getinfo(target, "Sl")
-    if info and info.short_src then
-        local filename = info.short_src:match("^.+/(.+)$") or info.short_src
-        return string.format("%s_%d", filename:gsub("%.", "_"), info.linedefined)
-    end
-
-    -- Fallback: strip invalid characters from the function memory address
-    return tostring(target):gsub("[^%w]", "_")
-end
-
--- H.done tracks which string targets have already been executed,
--- preventing double-setup when the same module is scheduled from multiple places.
-H.done = {}
-
--- Log history tracking
+-- Named modules share an attempt across triggers. Each callback registration gets its own.
+H.modules = {}
+H.last_callback = setmetatable({}, { __mode = "k" })
 H.trace_log = {}
-H.trace_map = {}
+H.triggers = H.augroup("CoreLoadTriggers")
 
-local function record_registration(target, phase, label)
-    local key = label or get_target_key(target)
-    if not H.trace_map[key] then
-        local entry = {
-            target = key,
-            phase = phase,
-            status = "registered",
-            registered_at = vim.uv.hrtime(),
-        }
-        H.trace_map[key] = entry
-        table.insert(H.trace_log, entry)
-    end
-end
-
-local function record_load_start(target, label)
-    local key = label or get_target_key(target)
-    local entry = H.trace_map[key]
-    if entry then
-        entry.status = "loading"
-        entry.start_time = vim.uv.hrtime()
-    end
-end
-
-local function record_load_end(target, status, err, label)
-    local key = label or get_target_key(target)
-    local entry = H.trace_map[key]
-    if entry then
-        entry.status = status
-        if err then
-            entry.err = err
-        end
-        if entry.start_time then
-            entry.duration_ms = (vim.uv.hrtime() - entry.start_time) / 1e6
-        end
-    end
+local function callback_label(fn)
+    local info = debug.getinfo(fn, "S")
+    return ("%s:%d"):format(info.short_src, info.linedefined)
 end
 
 --- Process a keymap spec table. Calls vim.keymap.set() for each entry.
@@ -91,62 +40,85 @@ local function keymap(specs, opts)
     end
 end
 
--- Cache for resolved wrapper closures to prevent redundant allocations
-H.resolved_cache = {}
+local function setup_module(mod)
+    if type(mod) ~= "table" then
+        return
+    end
+    if type(mod.setup) == "function" then
+        mod.setup()
+    end
+    if type(mod.keymap) == "table" then
+        keymap(mod.keymap)
+    end
+end
 
--- Resolves a target (string module name or function) into a callable.
--- String: require the module, then call .setup() if it exists.
---         Wrapped in H.done guard to ensure setup() runs at most once.
--- Function: used as-is.
--- Invalid type: notifies with ERROR and returns a no-op to prevent crashes.
-local function resolve(target, label)
-    local key = label or get_target_key(target)
+local function traceback(err)
+    return debug.traceback(tostring(err), 2)
+end
 
-    if H.resolved_cache[key] then
-        return H.resolved_cache[key]
+local function execute(target)
+    if type(target) == "function" then
+        return xpcall(target, traceback)
     end
 
-    local run_load
+    local previous = package.loaded[target]
+    local ok, mod = xpcall(require, traceback, target)
+    if not ok then
+        -- LuaJIT can leave a failed require marked as in progress. Allow an explicit retry.
+        package.loaded[target] = previous
+        return false, mod
+    end
+    return xpcall(setup_module, traceback, mod)
+end
 
-    if type(target) == "function" then
-        run_load = target
-    elseif type(target) == "string" then
-        run_load = function()
-            local mod = require(target)
-            if type(mod) ~= "table" then
-                return
-            end
-
-            if type(mod.setup) == "function" then
-                mod.setup()
-            end
-            if type(mod.keymap) == "table" then
-                keymap(mod.keymap)
-            end
-        end
-    else
-        vim.notify(("lib: invalid target type '%s'"):format(type(target)), vim.log.levels.ERROR)
+local function register(target, phase, label)
+    local named = type(target) == "string"
+    if not named and type(target) ~= "function" then
+        vim.notify(("Invalid loader target: %s"):format(type(target)), vim.log.levels.ERROR)
         return function() end
     end
 
-    local wrapper = function()
-        if H.done[key] then
-            return
-        end
-        H.done[key] = true
-
-        record_load_start(target, label)
-        local ok, err = pcall(run_load)
-        if ok then
-            record_load_end(target, "success", nil, label)
-        else
-            record_load_end(target, "failed", tostring(err), label)
-            vim.notify(("Config Error [%s]: %s"):format(key, tostring(err)), vim.log.levels.WARN)
+    local entry = named and H.modules[target] or nil
+    if not entry or (entry.status == "failed" and phase == "ensure") then
+        entry = {
+            target = label or (named and target or callback_label(target)),
+            phase = phase,
+            status = "registered",
+            registered_at = vim.uv.hrtime(),
+        }
+        table.insert(H.trace_log, entry)
+        if named then
+            H.modules[target] = entry
         end
     end
 
-    H.resolved_cache[key] = wrapper
-    return wrapper
+    return function(reason)
+        if entry.status ~= "registered" then
+            return
+        end
+
+        local parent = H.current
+        entry.trigger = phase
+        entry.reason = reason or phase
+        entry.parent = parent and parent.target
+        entry.status = "running"
+        entry.start_time = vim.uv.hrtime()
+        H.current = entry
+        if not named then
+            H.last_callback[target] = entry
+        end
+        local ok, err = execute(target)
+        H.current = parent
+        entry.duration_ms = (vim.uv.hrtime() - entry.start_time) / 1e6
+        if ok then
+            entry.status = "loaded"
+        else
+            entry.status = "failed"
+            entry.err = tostring(err)
+            local summary = entry.err:match("^[^\n]*") or entry.err
+            vim.notify(("Config Error [%s]: %s (see :LoadTrace)"):format(entry.target, summary), vim.log.levels.WARN)
+        end
+    end
 end
 
 -- One-per-tick queue: each later() task runs on its own event-loop tick so
@@ -164,13 +136,13 @@ local function drain()
 
     vim.schedule(function()
         local head = H.queue_head
-        local item = H.queue[head]
+        local run = H.queue[head]
 
         -- Free the memory immediately so the GC can clean up the closure
         H.queue[head] = nil
         H.queue_head = head + 1
 
-        item.fn()
+        run()
 
         H.draining = false
         drain()
@@ -178,8 +150,7 @@ local function drain()
 end
 
 M.now = function(target, label)
-    record_registration(target, "now", label)
-    resolve(target, label)()
+    register(target, "now", label)()
 end
 
 H.later_group = H.augroup("CoreLoadLaterStart")
@@ -200,9 +171,7 @@ H.has_autocmd = false
 ---@param target string|function The module name to require, or a function to call.
 ---@param label? string Optional label for the trace output.
 M.later = function(target, label)
-    record_registration(target, "later", label)
-
-    H.queue[H.queue_tail] = { fn = resolve(target, label), label = label or get_target_key(target) }
+    H.queue[H.queue_tail] = register(target, "later", label)
     H.queue_tail = H.queue_tail + 1
 
     if vim.v.vim_did_enter == 1 then
@@ -224,114 +193,73 @@ M.later = function(target, label)
     end
 end
 
---- Defers the execution of a target until a specific autocommand event or events fire.
----
---- The autocommand is configured to trigger exactly once (`once = true`) and
---- immediately self-deletes upon invocation to clean up memory and prevent
---- duplicate setup triggers.
----
----@param events string|string[] The autocommand event or list of events (e.g., "BufReadPre", "LspAttach").
----@param target string|function The module name to require, or a function to call.
----@param pattern string|nil Optional pattern to filter autocommand events (e.g., "*.go").
----@param label? string Optional label for the trace output.
+--- Run a registration on the first matching event across all its events and patterns.
+---@param events string|string[]
+---@param target string|function
+---@param pattern? string|string[]
+---@param label? string
 M.on_event = function(events, target, pattern, label)
-    record_registration(target, "event", label)
-
-    local target_key = label or get_target_key(target)
-    local group = H.augroup("CoreLoadLoadOnEvent_" .. target_key)
-
-    vim.api.nvim_create_autocmd(events, {
-        once = true,
-        group = group,
+    local run = register(target, "event", label)
+    local id
+    id = vim.api.nvim_create_autocmd(events, {
+        group = H.triggers,
         pattern = pattern,
-        callback = function()
-            resolve(target, label)()
-
-            vim.api.nvim_del_augroup_by_id(group)
+        callback = function(ev)
+            vim.api.nvim_del_autocmd(id)
+            local reason = ev.event
+            if ev.event == "User" or ev.event == "FileType" then
+                reason = reason .. " " .. ev.match
+            end
+            run(reason)
         end,
     })
 end
 
---- Defers the execution of a target until a specific filetype is opened.
----
---- This function safely manages the plugin lifecycle by allowing nested
---- events for proper initialization, aggressively self-deleting the
---- autocmd to prevent reentrancy loops, and deferring the actual load
---- to the event loop (`vim.schedule`) to keep the editor UI responsive.
----
---- If a buffer with a matching filetype is already open at registration
---- time, the target is scheduled immediately and the autocmd is skipped.
----
----@param filetypes string|string[] The filetype pattern(s) to match (e.g., "go", "lua").
----@param target string|function The module name to require, or a function to call.
----@param label? string Optional label for the trace output.
+--- Schedule setup for an already-open filetype, or when the first matching buffer opens.
+---@param filetypes string|string[]
+---@param target string|function
+---@param label? string
 M.on_filetype = function(filetypes, target, label)
-    record_registration(target, "filetype", label)
-
-    local target_key = label or get_target_key(target)
-    local group = H.augroup("CoreLoadFiletype_" .. target_key)
-
-    vim.api.nvim_create_autocmd("FileType", {
-        group = group,
-        pattern = filetypes,
-        -- Allow nested events so the loaded plugin can trigger its own
-        -- syntax or initialization autocmds seamlessly.
-        nested = true,
-        callback = function()
-            -- Immediately delete the autocmd group before executing the target.
-            -- This prevents infinite recursion if the plugin happens to open
-            -- another buffer or trigger the same filetype internally.
-            vim.api.nvim_del_augroup_by_id(group)
-
-            -- Defer the actual loading process to the next event loop tick.
-            -- This allows Neovim to immediately render the newly opened file
-            -- to the screen without causing the UI to freeze.
-            vim.schedule(resolve(target, label))
-        end,
-    })
-
-    -- Handle buffers already open at registration time: if a matching filetype
-    -- is already loaded, skip the autocmd entirely and schedule immediately.
+    local run = register(target, "filetype", label)
     local fts = type(filetypes) == "table" and filetypes or { filetypes }
-    local ft_set = {}
-    for _, ft in ipairs(fts) do
-        ft_set[ft] = true
-    end
-
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.api.nvim_buf_is_loaded(buf) and ft_set[vim.bo[buf].filetype] then
-            vim.api.nvim_del_augroup_by_id(group)
-            vim.schedule(resolve(target, label))
-            return
+        if vim.api.nvim_buf_is_loaded(buf) then
+            local ft = vim.bo[buf].filetype
+            if vim.tbl_contains(fts, ft) then
+                vim.schedule(function()
+                    run("existing " .. ft .. " buffer")
+                end)
+                return
+            end
         end
     end
+
+    local id
+    id = vim.api.nvim_create_autocmd("FileType", {
+        group = H.triggers,
+        pattern = fts,
+        callback = function(ev)
+            vim.api.nvim_del_autocmd(id)
+            vim.schedule(function()
+                run("FileType " .. ev.match)
+            end)
+        end,
+    })
 end
 
---- Returns true if the target has already been executed by the loader.
---- Only reliable for string targets; function targets use a debug-info key.
----
+--- A named module, or the most recently executed registration of this callback, succeeded.
 ---@param target string|function
 ---@return boolean
 M.loaded = function(target)
-    return H.done[get_target_key(target)] == true
+    local entry = H.modules[target] or H.last_callback[target]
+    return entry ~= nil and entry.status == "loaded"
 end
 
---- Executes target immediately if it has not already been loaded.
---- Idempotent: safe to call multiple times or from multiple places.
---- Intended for explicit dependency management inside setup() functions.
----
---- Example:
----   M.setup = function()
----       load.ensure('mason')  -- guarantee mason is ready before continuing
----       require('mason-tool-installer').setup({ ... })
----   end
----
----@param target string|function The module name to require, or a function to call.
----@param label? string Optional label for the trace output.
+--- Run immediately. Only an explicit ensure retries a failed named module.
+---@param target string|function
+---@param label? string
 M.ensure = function(target, label)
-    record_registration(target, "ensure", label)
-
-    resolve(target, label)()
+    register(target, "ensure", label)()
 end
 
 M.get_trace = function()

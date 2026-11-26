@@ -36,7 +36,7 @@ This configuration is designed to be **highly modular, responsive, and fast-star
 
 ## The Core Loader (`core.load`)
 
-The `core.load` module (located in [lua/core/load/init.lua](lua/core/load/init.lua)) provides robust scheduler helpers that wrap plugin loading in `pcall` to prevent config crashes.
+The `core.load` module (located in [lua/core/load/init.lua](lua/core/load/init.lua)) provides robust scheduler helpers that wrap plugin loading in `xpcall` to prevent config crashes.
 
 ### API Summary
 
@@ -46,13 +46,13 @@ The `core.load` module (located in [lua/core/load/init.lua](lua/core/load/init.l
 | `later` | `load.later(target)` | Defer loading to a one-per-tick queue starting after `VimEnter`. |
 | `on_event` | `load.on_event(events, target, pattern)` | Load a module when specific autocommand events fire (e.g., `BufReadPre`). |
 | `on_filetype` | `load.on_filetype(filetypes, target)` | Defer loading until a specific filetype buffer is opened. |
-| `loaded` | `load.loaded(target)` | Returns true if the target has already been executed by the loader. |
-| `ensure` | `load.ensure(target)` | Executes target immediately if it has not already been loaded. Safe to call multiple times. |
+| `loaded` | `load.loaded(target)` | Reports whether the module or the most recent execution of the callback succeeded. |
+| `ensure` | `load.ensure(target)` | Runs immediately. For a named module, skips running or successful setup and retries a failed attempt. |
 
 ### target resolution
 A `target` can be:
 - **A string**: Re-directed to safe-require the module and automatically invoke its `.setup()` function if it exists.
-- **A function**: Executed directly.
+- **A function**: Each registration runs independently, even when the same callback is registered twice. Labels are for display.
 
 ---
 

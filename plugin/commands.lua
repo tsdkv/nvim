@@ -44,7 +44,7 @@ local function show_loader_trace()
     local total_ms = 0
 
     for _, entry in ipairs(trace) do
-        local status_str = entry.status == "success" and "✓" or entry.status == "failed" and "✗" or "○"
+        local status_str = entry.status == "loaded" and "✓" or entry.status == "failed" and "✗" or "○"
         local duration = entry.duration_ms or 0
         total_ms = total_ms + duration
 
@@ -55,7 +55,9 @@ local function show_loader_trace()
         local dur_str = entry.duration_ms and string.format("(%.2fms)", duration) or ""
         table.insert(lines, string.format("[%s] %-8s | %-30s %10s", status_str, entry.phase, entry.target, dur_str))
         if entry.err then
-            table.insert(lines, "  └─ Error: " .. entry.err)
+            for _, line in ipairs(vim.split(entry.err, "\n", { plain = true })) do
+                table.insert(lines, "    " .. line)
+            end
         end
     end
 
