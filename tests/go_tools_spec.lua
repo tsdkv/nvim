@@ -38,4 +38,52 @@ describe("Go tool mappings", function()
             api.nvim_buf_get_lines(source, 0, -1, false)
         )
     end)
+
+    it("inserts impl output in the original package and tracks edits during prompts and execution", function()
+        local dir = vim.fn.tempname()
+        api.nvim_buf_set_name(source, dir .. "/file.go")
+        api.nvim_buf_set_lines(source, 0, -1, false, { "package p", "type R struct{}", "// tail" })
+        api.nvim_win_set_cursor(0, { 2, 0 })
+        local answer, finish
+        vim.ui.input = function(_, callback)
+            answer = callback
+        end
+        vim.system = function(cmd, opts, callback)
+            assert.are.same({ "impl", "r R", "io.Reader" }, cmd)
+            assert.are.equal(dir, opts.cwd)
+            finish = callback
+        end
+
+        tools.impl()
+        api.nvim_set_current_buf(other)
+        answer("r R")
+        answer("io.Reader")
+        api.nvim_buf_set_lines(source, 0, 0, false, { "// header" })
+        finish({ code = 0, stdout = "func (r R) Read() {}\n" })
+        assert.is_true(vim.wait(500, function()
+            return api.nvim_buf_line_count(source) == 5
+        end))
+        assert.are.same(
+            { "// header", "package p", "type R struct{}", "func (r R) Read() {}", "// tail" },
+            api.nvim_buf_get_lines(source, 0, -1, false)
+        )
+        assert.are.equal(other, api.nvim_get_current_buf())
+        assert.are.same({ "" }, api.nvim_buf_get_lines(other, 0, -1, false))
+    end)
+
+    it("releases the insertion mark when the interface prompt is cancelled", function()
+        local ns = api.nvim_get_namespaces()["go.impl"]
+        local answer
+        vim.ui.input = function(_, callback)
+            answer = callback
+        end
+        vim.system = function()
+            error("unexpected invocation of impl")
+        end
+        tools.impl()
+        answer("r R")
+        assert.are.equal(1, #api.nvim_buf_get_extmarks(source, ns, 0, -1, {}))
+        answer(nil)
+        assert.are.same({}, api.nvim_buf_get_extmarks(source, ns, 0, -1, {}))
+    end)
 end)
