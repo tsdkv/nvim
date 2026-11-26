@@ -36,7 +36,7 @@ This configuration is designed to be **highly modular, responsive, and fast-star
 
 ## The Core Loader (`core.load`)
 
-The `core.load` module (located in [lua/core/load/init.lua](file:///Users/tmac/.config/nvim/lua/core/load/init.lua)) provides robust scheduler helpers that wrap plugin loading in `pcall` to prevent config crashes.
+The `core.load` module (located in [lua/core/load/init.lua](lua/core/load/init.lua)) provides robust scheduler helpers that wrap plugin loading in `pcall` to prevent config crashes.
 
 ### API Summary
 
@@ -61,7 +61,7 @@ A `target` can be:
 To integrate a new plugin, follow these steps:
 
 1. **Register the Plugin**:
-   Open [lua/plugins/init.lua](file:///Users/tmac/.config/nvim/lua/plugins/init.lua) and append the GitHub repository name to `vim.pack.add`. Use the `gh` helper:
+   Open [lua/plugins/init.lua](lua/plugins/init.lua) and append the GitHub repository name to `vim.pack.add`. Use the `gh` helper:
    ```lua
    vim.pack.add({
        -- ... existing plugins
@@ -95,7 +95,7 @@ To integrate a new plugin, follow these steps:
    ```
 
 4. **Schedule the Loading**:
-   In [lua/plugins/init.lua](file:///Users/tmac/.config/nvim/lua/plugins/init.lua), schedule how the plugin configuration is resolved using `core.load`:
+   In [lua/plugins/init.lua](lua/plugins/init.lua), schedule how the plugin configuration is resolved using `core.load`:
    - **Eager/Immediate** (rare, only for themes or core UI):
      ```lua
      load.now("plugins.plugin_name")
@@ -117,10 +117,22 @@ To integrate a new plugin, follow these steps:
 
 ## Testing Configurations
 
-Unit tests for `core.load` are located in [tests/load_spec.lua](file:///Users/tmac/.config/nvim/tests/load_spec.lua). 
+The loader tests live in [tests/load_spec.lua](tests/load_spec.lua).
 
-You can run the test suite by running the following command from the root directory:
+Run the suite from the checkout root.
+
 ```sh
 make test
 ```
+
+In a linked worktree, use this invocation to put the checkout first on Neovim's runtime path. It uses the installed Plenary plugin and prints the source path of `core.load` in both the runner and its test processes.
+
+```sh
+VIMINIT='lua
+vim.opt.runtimepath:prepend(vim.fn.getcwd())
+vim.cmd.packadd("plenary.nvim")
+print(debug.getinfo(require("core.load").now, "S").source)' make test
+```
+
+Check that each printed `@…/lua/core/load/init.lua` path points into the worktree under test.
 Always ensure tests pass before committing changes.
