@@ -36,7 +36,7 @@ This configuration is designed to be **highly modular, responsive, and fast-star
 
 ## The Core Loader (`core.load`)
 
-The `core.load` module (located in [lua/core/load/init.lua](lua/core/load/init.lua)) provides robust scheduler helpers that wrap plugin loading in `xpcall` to prevent config crashes.
+The [core loader](lua/core/load/init.lua) runs plugin setup with `xpcall`. Use `:LoadTrace` to see the planned phase, actual trigger, calling target, and traceback for a failed attempt.
 
 ### API Summary
 
