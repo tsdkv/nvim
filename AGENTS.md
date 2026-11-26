@@ -18,7 +18,7 @@ This configuration is designed to be **highly modular, responsive, and fast-star
 │   ├── keymap.lua
 │   ├── autocmds.lua
 │   └── commands.lua
-├── ftplugin/             # Filetype-specific settings
+├── after/ftplugin/       # Filetype overrides applied after the runtime defaults
 │   ├── json.lua
 │   └── ...
 ├── lua/

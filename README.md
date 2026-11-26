@@ -17,7 +17,7 @@ This configuration leverages Neovim 0.12's native `vim.pack` functionality combi
 ```text
 .
 ├── plugin/       # Global keymaps, autocmds, and commands (auto-loaded on startup)
-├── ftplugin/     # Filetype-specific settings (e.g., indentation overrides)
+├── after/ftplugin/  # Indentation overrides applied after the runtime defaults
 ├── lua/
 │   ├── core/     # Core scheduler helpers (load.now, load.later, load.on_event)
 │   └── plugins/  # One file per plugin; each exports a sterile `M.setup()`
