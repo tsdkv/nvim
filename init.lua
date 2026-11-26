@@ -5,5 +5,6 @@ end
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+vim.g.no_plugin_maps = true
 
 require("core.load").now("plugins")

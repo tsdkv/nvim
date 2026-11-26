@@ -1,8 +1,6 @@
 local M = {}
 
 local function setup_treesitter_objects()
-    vim.g.no_plugin_maps = true
-
     -- Setup basic options
     require("nvim-treesitter-textobjects").setup({
         select = {
