@@ -1,13 +1,16 @@
--- External CLI tools invoked from keymaps (async via vim.system).
+-- External Go tools invoked from buffer-local keymaps.
 
 local M = {}
 
 function M.iferr()
+    local buf = vim.api.nvim_get_current_buf()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local offset = vim.fn.line2byte(row) + col
-    local result = vim.fn.systemlist("iferr -pos " .. offset .. " " .. vim.fn.expand("%"))
-    if vim.v.shell_error ~= 0 then
-        vim.notify("iferr: " .. table.concat(result, "\n"), vim.log.levels.WARN)
+    -- iferr uses one-based byte positions in the source passed on stdin.
+    local offset = vim.api.nvim_buf_get_offset(buf, row - 1) + col + 1
+    local ok, result = pcall(vim.fn.systemlist, { "iferr", "-pos", tostring(offset) }, buf)
+    if not ok or vim.v.shell_error ~= 0 then
+        local message = ok and table.concat(result, "\n") or tostring(result)
+        vim.notify("iferr: " .. message, vim.log.levels.WARN)
         return
     end
     vim.api.nvim_put(result, "l", true, true)
