@@ -10,8 +10,6 @@ function M.get()
         gopls = {
             -- Use gofumpt (stricter, opinionated formatter) instead of standard gofmt.
             gofumpt = true,
-            -- Enable staticcheck static analysis to find code bugs and optimization issues.
-            staticcheck = true,
             -- Enable autocomplete for packages that haven't been imported yet.
             completeUnimported = true,
             -- Show function parameter placeholders when autocompleting functions.

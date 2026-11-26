@@ -2,22 +2,22 @@
 
 local M = {}
 
--- Toggle staticcheck dynamically for gopls in the current session
+-- Switch the attached workspace between full and disabled Staticcheck.
 function M.toggle_staticcheck()
-    local gopls_client = vim.lsp.get_clients({ name = "gopls" })[1]
+    local gopls_client = vim.lsp.get_clients({ name = "gopls", bufnr = 0 })[1]
     if not gopls_client then
-        vim.notify("gopls client not active", vim.log.levels.WARN)
+        vim.notify("gopls not attached to this buffer", vim.log.levels.WARN)
         return
     end
 
     ---@type any
-    local gopls_settings = gopls_client.config.settings.gopls
+    local gopls_settings = gopls_client.settings.gopls
     local new_val = not gopls_settings.staticcheck
     gopls_settings.staticcheck = new_val
 
     -- Notify gopls of the didChangeConfiguration event
     gopls_client:notify("workspace/didChangeConfiguration", {
-        settings = gopls_client.config.settings,
+        settings = gopls_client.settings,
     })
 
     vim.notify("gopls staticcheck: " .. (new_val and "ON" or "OFF"), vim.log.levels.INFO)
