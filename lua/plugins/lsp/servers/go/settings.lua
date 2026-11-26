@@ -1,7 +1,7 @@
 -- gopls settings. Returned by a function (not a plain table) because the
 -- "local" import group depends on the buffer active at setup time.
 
-local util = require("plugins.lsp.servers.go.util")
+local go_module = require("lang.go.module")
 
 local M = {}
 
@@ -65,7 +65,7 @@ function M.get()
             directoryFilters = { "-**/node_modules", "-**/.git", "-**/.venv" },
 
             -- Group this module's imports after third-party ones.
-            ["local"] = util.module_path() or "",
+            ["local"] = go_module.module_path() or "",
         },
     }
 end

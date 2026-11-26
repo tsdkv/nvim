@@ -23,6 +23,7 @@ This configuration is designed to be **highly modular, responsive, and fast-star
 │   └── ...
 ├── lua/
 │   ├── core/load/        # Core scheduling & lazy-loading framework
+│   ├── lang/go/          # Go module lookup and external Go tools
 │   └── plugins/          # Plugin definitions (each file returns a setup module)
 │       ├── init.lua      # Plugin registry (vim.pack.add and lazy bindings)
 │       ├── neo-tree.lua

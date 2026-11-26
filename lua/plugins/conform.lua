@@ -36,8 +36,8 @@ function M.setup()
                 -- being formatted, not the current buffer (async format may
                 -- run after a buffer switch).
                 prepend_args = function(_, ctx)
-                    local util = require("plugins.lsp.servers.go.util")
-                    local mod = util.module_path(ctx.dirname or vim.fs.dirname(ctx.filename))
+                    local go_module = require("lang.go.module")
+                    local mod = go_module.module_path(ctx.dirname or vim.fs.dirname(ctx.filename))
                     return mod and { "-local", mod } or {}
                 end,
             },

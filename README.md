@@ -20,6 +20,7 @@ This configuration leverages Neovim 0.12's native `vim.pack` functionality combi
 ├── after/ftplugin/  # Indentation overrides applied after the runtime defaults
 ├── lua/
 │   ├── core/     # Core scheduler helpers (load.now, load.later, load.on_event)
+│   ├── lang/go/  # Go module lookup and external Go tools
 │   └── plugins/  # One file per plugin; each exports a sterile `M.setup()`
 └── init.lua      # Entry point (sets leader keys and initializes plugins)
 ```

@@ -1,6 +1,5 @@
 local commands = require("plugins.lsp.servers.go.commands")
 local settings = require("plugins.lsp.servers.go.settings")
-local tools = require("plugins.lsp.servers.go.tools")
 
 local function use_working_directory(config)
     local cwd = vim.fn.resolve(vim.fn.getcwd())
@@ -45,6 +44,7 @@ return {
         vim.lsp.enable("gopls")
     end,
     on_attach = function(_, bufnr)
+        local tools = require("lang.go.tools")
         require("core.load").keymap({
             { "<leader>lg", group = "Go Tools" },
             { "<leader>lge", tools.iferr, desc = "iferr: generate error block" },
