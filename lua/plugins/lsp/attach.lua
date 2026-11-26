@@ -1,5 +1,4 @@
 local load = require("core.load")
-local restart_lsp = require("core.utils").restart_lsp
 
 local M = {}
 
@@ -102,13 +101,7 @@ local function keymaps(bufnr)
             end,
             desc = "Next Error",
         },
-        {
-            "<leader>lR",
-            function()
-                restart_lsp(vim.lsp.get_clients({ bufnr = bufnr }))
-            end,
-            desc = "Restart LSP",
-        },
+        { "<leader>lR", "<cmd>lsp restart<cr>", desc = "Restart attached LSP clients" },
     }, { buffer = bufnr })
 end
 
@@ -131,7 +124,7 @@ local function document_highlight(_, bufnr)
         group = group,
         buffer = bufnr,
         callback = function()
-            -- Skip if no LSP clients are ready (e.g. during restart after branch switch)
+            -- A client may have detached since this autocmd was registered.
             local clients = vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/documentHighlight" })
             if #clients > 0 then
                 vim.lsp.buf.document_highlight()
