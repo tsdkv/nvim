@@ -99,7 +99,13 @@ load.now("plugins.treesitter") -- treesitter doesn't support lazy loading
 
 -- Deferred: one per event-loop tick to keep startup responsive
 load.later("nvim-web-devicons")
-load.later("plugins.neo-tree")
+
+-- Apply open_current before Neo-tree handles the initial directory buffer.
+local first_arg = vim.fn.argv(0)
+local opens_directory = type(first_arg) == "string" and vim.fn.isdirectory(first_arg) == 1
+local load_tree = opens_directory and load.now or load.later
+load_tree("plugins.neo-tree")
+
 load.later("plugins.persistence")
 load.later("plugins.mini")
 load.later("plugins.blink")
